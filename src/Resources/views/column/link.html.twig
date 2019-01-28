@@ -1,0 +1,4 @@
+{% set id = datagrid_accessor(item, linkIdPropertyName) %}
+{% if id %}
+    <a href='{{ path(route, {id: id}) }}'>{{ datagrid_accessor(item, propertyName) }}</a>
+{% endif %}

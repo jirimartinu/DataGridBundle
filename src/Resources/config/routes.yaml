@@ -1,0 +1,5 @@
+datagrid_ajax:
+  path: '/api/datagrid/{name}'
+  controller: FreezyBee\DataGridBundle\Controller\DataGridController::handle
+  requirements:
+    name: '.*'

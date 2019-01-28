@@ -1,0 +1,12 @@
+services:
+  FreezyBee\DataGridBundle\DataGridFactory:
+    autowire: true
+
+  FreezyBee\DataGridBundle\Twig\DataGridExtension:
+    autowire: true
+    tags: ['twig.extension']
+
+  FreezyBee\DataGridBundle\Controller\DataGridController:
+    autowire: true
+    tags: ['controller.service_arguments']
+

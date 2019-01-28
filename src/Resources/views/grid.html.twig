@@ -1,0 +1,78 @@
+<table class="table js-datagrid-table">
+    <thead>
+    <tr>
+        {% for column in columns %}
+            <td>
+                {% if column.filterable %}
+                    {{ datagrid_filter(column.filter, column.name, loop.index0) }}
+                {% endif %}
+            </td>
+        {% endfor %}
+        {% if actionColumn %}
+            <td></td>
+        {% endif %}
+    </tr>
+    <tr>
+        {% for column in columns %}
+            <th data-name="{{ column.name }}" data-orderable="{{ column.sortable ? 'true' : 'false' }}">
+                {{ column.label }}
+            </th>
+        {% endfor %}
+        {% if actionColumn %}
+            <th data-orderable="false"></th>
+        {% endif %}
+    </tr>
+    </thead>
+</table>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        $('.js-datagrid-table').each(function () {
+            const table = $(this).DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: '{{ path('datagrid_ajax', {name: name}) }}'
+            });
+
+            const container = $(table.table().container());
+
+            let timeout = null;
+
+            container.on('keyup', 'thead input', function () {
+                const self = $(this);
+                clearTimeout(timeout);
+                timeout = setTimeout(function () {
+                    table
+                        .column(self.data('index'))
+                        .search(self.val())
+                        .draw();
+                }, 200);
+            });
+
+            container.on('change', 'thead select', function () {
+                const self = $(this);
+                table
+                    .column(self.data('index'))
+                    .search(self.val())
+                    .draw();
+            });
+
+            container.find('thead .js-datagrid-flatpickr').each(function () {
+                const self = $(this);
+                flatpickr(this, {
+                    dateFormat: 'd.m.Y',
+                    locale: 'cs',
+                    onChange: function (selectedDates) {
+                        if (selectedDates.length === 2) {
+                            console.log(selectedDates);
+                            table
+                                .column(self.data('index'))
+                                .search(self.val())
+                                .draw();
+                        }
+                    }
+                });
+            });
+        });
+    });
+</script>

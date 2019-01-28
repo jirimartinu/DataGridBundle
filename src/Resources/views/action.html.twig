@@ -1,0 +1,3 @@
+{% for action in actions %}
+    <a href='{{ path(action.route, action.params|merge({id: item.id})) }}' class='{{ action.class }}'>{% if action.icon %}<i class='fa fa-{{ action.icon }}'></i>{% endif %} {{ action.label }}</a>
+{% endfor %}
