@@ -135,6 +135,9 @@ class DataGridExtension extends AbstractExtension
     public function accessor($item, string $propertyPath)
     {
         try {
+            if (is_array($item)) {
+                $propertyPath = "[$propertyPath]";
+            }
             return $this->propertyAccessor->getValue($item, $propertyPath);
         } catch (UnexpectedTypeException $e) {
             return null;

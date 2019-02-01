@@ -7,7 +7,6 @@ namespace FreezyBee\DataGridBundle\Controller;
 use FreezyBee\DataGridBundle\DataGridFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
@@ -26,7 +25,6 @@ class DataGridController
     }
 
     /**
-     * @Route("/api/grid/{name}", name="datagrid_ajax")
      * @param string $name
      * @param Request $request
      * @return JsonResponse

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FreezyBee\DataGridBundle;
 
 use FreezyBee\DataGridBundle\Column\ActionColumn;
-use FreezyBee\DataGridBundle\Column\Column;
 use FreezyBee\DataGridBundle\DataSource\DataSourceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,11 +21,8 @@ class DataGrid
     /** @var DataSourceInterface */
     private $dataSource;
 
-    /** @var Column[] */
-    private $columns;
-
-    /** @var ActionColumn|null */
-    private $actionColumn;
+    /** @var DataGridConfig */
+    private $config;
 
     /** @var string */
     private $name;
@@ -34,21 +30,18 @@ class DataGrid
     /**
      * @param EngineInterface $engine
      * @param DataSourceInterface $dataSource
-     * @param array $columns
-     * @param ActionColumn|null $actionColumn
+     * @param DataGridConfig $config
      * @param string $name
      */
     public function __construct(
         EngineInterface $engine,
         DataSourceInterface $dataSource,
-        array $columns,
-        ?ActionColumn $actionColumn,
+        DataGridConfig $config,
         string $name
     ) {
         $this->engine = $engine;
         $this->dataSource = $dataSource;
-        $this->columns = $columns;
-        $this->actionColumn = $actionColumn;
+        $this->config = $config;
         $this->name = $name;
     }
 
@@ -65,13 +58,13 @@ class DataGrid
         // sort
         $orderByIndex = $query['order'][0]['column'] ?? null;
         if ($orderByIndex !== null) {
-            $this->dataSource->applySort($this->columns[$orderByIndex], $query['order'][0]['dir']);
+            $this->dataSource->applySort($this->config->getColumns()[$orderByIndex], $query['order'][0]['dir']);
         }
 
         // filters
         foreach ($query['columns'] as $index => $ajaxColumn) {
             $value = $ajaxColumn['search']['value'];
-            $column = $this->columns[$index] ?? null;
+            $column = $this->config->getColumns()[$index] ?? null;
 
             if ($value !== '' && $column !== null && $column->isFilterable()) {
                 $this->dataSource->applyFilter($column, $value);
@@ -88,17 +81,17 @@ class DataGrid
         $data = [];
         foreach ($items as $item) {
             $row = [];
-            foreach ($this->columns as $column) {
+            foreach ($this->config->getColumns() as $column) {
                 if ($column instanceof ActionColumn) {
                     continue;
                 }
                 $row[] = $column->renderContent($item, $this->engine);
             }
 
-            if ($this->actionColumn !== null) {
+            if ($this->config->getActionColumn()->hasActions()) {
                 $row[] = $this->engine->render('@FreezyBeeDataGrid/action.html.twig', [
                     'item' => $item,
-                    'actions' => $this->actionColumn->getActions()
+                    'actions' => $this->config->getActionColumn()->getActions()
                 ]);
             }
             $data[] = $row;
@@ -117,10 +110,20 @@ class DataGrid
      */
     public function render(): string
     {
+        $sortIndex = 0;
+        if ($this->config->getDefaultSortColumnName() !== null) {
+            $sortIndex = array_search($this->config->getDefaultSortColumnName(), $this->config->getColumns(), true);
+        }
+
         return $this->engine->render('@FreezyBeeDataGrid/grid.html.twig', [
             'name' => $this->name,
-            'columns' => $this->columns,
-            'actionColumn' => $this->actionColumn
+            'columns' => $this->config->getColumns(),
+            'actionColumn' => $this->config->getActionColumn(),
+            'default' => [
+                'perPage' => $this->config->getDefaultPerPage(), $this->config->getColumns(),
+                'sortIndex' => $sortIndex,
+                'sortDir' => $this->config->getDefaultSortColumnDirection() ?? 'desc',
+            ]
         ]);
     }
 }

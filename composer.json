@@ -14,21 +14,33 @@
       "FreezyBee\\DataGridBundle\\": "src"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "FreezyBee\\DataGridBundle\\Tests\\": "tests"
+    }
+  },
   "require": {
     "php": "^7.1",
+    "ext-json": "*",
     "doctrine/orm": "^2.6",
     "symfony/config": "^4.0",
     "symfony/dependency-injection": "^4.0",
-    "symfony/http-kernel": "^4.0",
     "symfony/property-access": "^4.0",
     "symfony/templating": "^4.0",
+    "symfony/yaml": "^4.0",
     "twig/twig": "^2.0"
   },
   "config": {
     "sort-packages": true
   },
   "require-dev": {
+    "doctrine/doctrine-bundle": "^1.10",
     "phpstan/phpstan-shim": "^0.11",
-    "squizlabs/php_codesniffer": "^3.4"
+    "phpunit/phpunit": "^7.5",
+    "squizlabs/php_codesniffer": "^3.4",
+    "symfony/framework-bundle": "^4.2",
+    "symfony/panther": "^0.2",
+    "symfony/phpunit-bridge": "^4.2",
+    "symfony/twig-bundle": "^4.2"
   }
 }

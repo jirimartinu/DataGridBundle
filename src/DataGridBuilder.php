@@ -26,6 +26,15 @@ class DataGridBuilder
     /** @var ActionColumn */
     private $actionColumn;
 
+    /** @var string|null */
+    private $defaultSortColumnName;
+
+    /** @var string|null */
+    private $defaultSortColumnDirection;
+
+    /** @var int */
+    private $defaultPerPage = 10;
+
     /**
      */
     public function __construct()
@@ -43,13 +52,6 @@ class DataGridBuilder
         return $this;
     }
 
-    /**
-     * @return array|QueryBuilder|null
-     */
-    public function getDataSource()
-    {
-        return $this->dataSource;
-    }
 
     /**
      * @param string $name
@@ -97,27 +99,50 @@ class DataGridBuilder
     }
 
     /**
+     * @param string $name
      * @param Column $column
      * @return Column
      */
-    public function add(Column $column): Column
+    public function add(string $name, Column $column): Column
     {
         return $this->columns[] = $column;
     }
 
     /**
-     * @return Column[]
+     * @param string $name
+     * @param string $direction
+     * @return DataGridBuilder
      */
-    public function getColumns(): array
+    public function setDefaultSort(string $name, string $direction): self
     {
-        return $this->columns;
+        $this->defaultSortColumnName = $name;
+        $this->defaultSortColumnDirection = $direction;
+        return $this;
     }
 
     /**
-     * @return ActionColumn
+     * @param int $defaultPerPage
+     * @return DataGridBuilder
      */
-    public function getActionColumn(): ActionColumn
+    public function setDefaultPerPage(int $defaultPerPage): self
     {
-        return $this->actionColumn;
+        $this->defaultPerPage = $defaultPerPage;
+        return $this;
+    }
+
+    /**
+     * @internal
+     * @return DataGridConfig
+     */
+    public function generateConfig(): DataGridConfig
+    {
+        return new DataGridConfig(
+            $this->dataSource,
+            $this->columns,
+            $this->actionColumn,
+            $this->defaultSortColumnName,
+            $this->defaultSortColumnDirection,
+            $this->defaultPerPage
+        );
     }
 }

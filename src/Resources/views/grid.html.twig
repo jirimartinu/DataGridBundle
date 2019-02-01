@@ -8,7 +8,7 @@
                 {% endif %}
             </td>
         {% endfor %}
-        {% if actionColumn %}
+        {% if actionColumn.hasActions() %}
             <td></td>
         {% endif %}
     </tr>
@@ -18,7 +18,7 @@
                 {{ column.label }}
             </th>
         {% endfor %}
-        {% if actionColumn %}
+        {% if actionColumn.hasActions() %}
             <th data-orderable="false"></th>
         {% endif %}
     </tr>
@@ -31,6 +31,8 @@
             const table = $(this).DataTable({
                 processing: true,
                 serverSide: true,
+                pageLength: {{ default.perPage }},
+                order: [[{{ default.sortIndex }}, '{{ default.sortDir }}']],
                 ajax: '{{ path('datagrid_ajax', {name: name}) }}'
             });
 

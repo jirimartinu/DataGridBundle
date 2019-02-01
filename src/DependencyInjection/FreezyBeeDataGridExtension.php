@@ -24,7 +24,6 @@ class FreezyBeeDataGridExtension extends Extension
         $loader->load('services.yaml');
 
         $container->registerForAutoconfiguration(DataGridTypeInterface::class)
-            ->setPublic(true)
-            ->setAutowired(true);
+            ->addTag('datagrid.type');
     }
 }

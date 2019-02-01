@@ -37,4 +37,12 @@ class ActionColumn extends Column
     {
         return $this->actions;
     }
+
+    /**
+     * @return bool
+     */
+    public function hasActions(): bool
+    {
+        return count($this->actions) > 0;
+    }
 }

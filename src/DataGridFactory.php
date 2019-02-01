@@ -52,8 +52,9 @@ class DataGridFactory
 
         $builder = new DataGridBuilder();
         $gridType->buildGrid($builder);
+        $config = $builder->generateConfig();
 
-        $dataSource = $builder->getDataSource();
+        $dataSource = $config->getDataSource();
         if ($dataSource instanceof QueryBuilder) {
             $dataSourceImpl = new DoctrineDataSource($dataSource);
         } elseif (is_array($dataSource)) {
@@ -62,12 +63,6 @@ class DataGridFactory
             throw new DataGridException('Invalid datasource');
         }
 
-        return new DataGrid(
-            $this->engine,
-            $dataSourceImpl,
-            $builder->getColumns(),
-            $builder->getActionColumn(),
-            $className
-        );
+        return new DataGrid($this->engine, $dataSourceImpl, $config, $className);
     }
 }

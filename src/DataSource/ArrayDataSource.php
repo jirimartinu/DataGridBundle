@@ -50,13 +50,13 @@ class ArrayDataSource implements DataSourceInterface
         foreach ($column->getSortColumnNames() as $propertyPath) {
             usort($this->data, function ($item1, $item2) use ($propertyPath, $direction): int {
                 try {
-                    $value1 = $this->propertyAccessor->getValue($item1, $propertyPath);
+                    $value1 = $this->accessValue($item1, $propertyPath);
                 } catch (UnexpectedTypeException $e) {
                     $value1 = null;
                 }
 
                 try {
-                    $value2 = $this->propertyAccessor->getValue($item2, $propertyPath);
+                    $value2 = $this->accessValue($item2, $propertyPath);
                 } catch (UnexpectedTypeException $e) {
                     $value2 = null;
                 }
@@ -86,7 +86,7 @@ class ArrayDataSource implements DataSourceInterface
                     $this->data = array_filter($this->data, function ($item) use ($column, $value): bool {
                         try {
                             foreach ($column->getFilterColumnNames() as $filterColumnName) {
-                                if ($this->propertyAccessor->getValue($item, $filterColumnName) === $value) {
+                                if ($this->accessValue($item, $filterColumnName) === $value) {
                                     return true;
                                 }
                             }
@@ -102,7 +102,7 @@ class ArrayDataSource implements DataSourceInterface
 
                     $this->data = array_filter($this->data, function ($item) use ($propertyPath, $value): bool {
                         try {
-                            return $this->propertyAccessor->getValue($item, $propertyPath) === $value;
+                            return $this->accessValue($item, $propertyPath) === $value;
                         } catch (UnexpectedTypeException $e) {
                             return false;
                         }
@@ -113,7 +113,7 @@ class ArrayDataSource implements DataSourceInterface
                     [$from, $to] = StringParserHelper::parseStringToDateArray($value);
 
                     $this->data = array_filter($this->data, function ($item) use ($propertyPath, $from, $to): bool {
-                        $existsValue = $this->propertyAccessor->getValue($item, $propertyPath);
+                        $existsValue = $this->accessValue($item, $propertyPath);
                         return ($existsValue >= $from && $existsValue <= $to);
                     });
                     return;
@@ -122,7 +122,7 @@ class ArrayDataSource implements DataSourceInterface
                     [$from, $to] = StringParserHelper::parseStringToNumberArray($value);
 
                     $this->data = array_filter($this->data, function ($item) use ($propertyPath, $from, $to): bool {
-                        $existsValue = $this->propertyAccessor->getValue($item, $propertyPath);
+                        $existsValue = $this->accessValue($item, $propertyPath);
                         return ($existsValue >= $from && $existsValue <= $to);
                     });
                     return;
@@ -133,7 +133,7 @@ class ArrayDataSource implements DataSourceInterface
         $value = mb_strtolower($value);
 
         $this->data = array_filter($this->data, function ($item) use ($propertyPath, $value): bool {
-            $existsValue = (string) $this->propertyAccessor->getValue($item, $propertyPath);
+            $existsValue = (string) $this->accessValue($item, $propertyPath);
             return mb_stripos($existsValue, $value) !== false;
         });
     }
@@ -160,5 +160,18 @@ class ArrayDataSource implements DataSourceInterface
     public function getData(): array
     {
         return $this->data;
+    }
+
+    /**
+     * @param mixed $item
+     * @param string $propertyPath
+     * @return mixed
+     */
+    public function accessValue($item, string $propertyPath)
+    {
+        if (is_array($item)) {
+            $propertyPath = "[$propertyPath]";
+        }
+        return $this->propertyAccessor->getValue($item, $propertyPath);
     }
 }

@@ -1,0 +1,15 @@
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/|version|/phpunit.xsd"
+        bootstrap="./tests/bootstrap.php"
+    >
+    <php>
+        <env name="KERNEL_CLASS" value="FreezyBee\DataGridBundle\Tests\App\Kernel"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="My Test Suite">
+            <directory>./tests/*</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>
