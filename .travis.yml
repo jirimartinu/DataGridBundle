@@ -1,4 +1,6 @@
 language: php
+addons:
+    chrome: stable
 
 cache:
     directories:
@@ -7,12 +9,11 @@ cache:
 php:
     - 7.1
     - 7.2
-    - 7.3
 
 install:
     - composer install --no-interaction --prefer-dist
 
 script:
-    - php vendor/bin/phpstan analyse ./src ./tests --level 7
     - php vendor/bin/phpcs --standard=PSR12 --ignore=./src/Resources ./src ./tests
+    - php vendor/bin/phpstan analyse ./src ./tests --level 7
     - php vendor/bin/phpunit
