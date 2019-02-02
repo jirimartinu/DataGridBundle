@@ -28,17 +28,17 @@ class DateTimeColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function renderContent($row, EngineInterface $engine): ?string
+    public function renderContent($row, EngineInterface $engine, array $params = []): ?string
     {
-        $content = parent::renderContent($row, $engine);
+        $content = parent::renderContent($row, $engine, $params);
         if ($content !== null) {
             return $content;
         }
 
         return $engine->render('@FreezyBeeDataGrid/column/datetime.html.twig', [
-            'item' => $row,
-            'propertyName' => $this->contentColumnName,
-            'format' => $this->format,
-        ]);
+                'item' => $row,
+                'propertyName' => $this->contentColumnName,
+                'format' => $this->format,
+            ] + $params);
     }
 }

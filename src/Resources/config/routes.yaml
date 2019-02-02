@@ -1,5 +1,11 @@
 datagrid_ajax:
-  path: '/api/datagrid/{name}'
-  controller: FreezyBee\DataGridBundle\Controller\DataGridController::handle
+  path: '/datagrid/ajax/{name}'
+  controller: FreezyBee\DataGridBundle\Controller\DataGridController::ajax
+  requirements:
+    name: '.*'
+
+datagrid_export:
+  path: '/datagrid/export/{name}'
+  controller: FreezyBee\DataGridBundle\Controller\DataGridController::export
   requirements:
     name: '.*'

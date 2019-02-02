@@ -7,6 +7,7 @@ namespace FreezyBee\DataGridBundle\DataSource;
 use FreezyBee\DataGridBundle\Column\Column;
 use FreezyBee\DataGridBundle\Filter\DateRangeFilter;
 use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
+use FreezyBee\DataGridBundle\Filter\SelectBooleanFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
 use FreezyBee\DataGridBundle\Utils\StringParserHelper;
@@ -83,6 +84,10 @@ class ArrayDataSource implements DataSourceInterface
         if ($filter !== null) {
             switch (true) {
                 case $filter instanceof SelectFilter:
+                    if ($filter instanceof SelectBooleanFilter) {
+                        $value = (bool) $value;
+                    }
+
                     $this->data = array_filter($this->data, function ($item) use ($column, $value): bool {
                         try {
                             foreach ($column->getFilterColumnNames() as $filterColumnName) {

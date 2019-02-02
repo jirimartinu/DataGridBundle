@@ -7,6 +7,7 @@ namespace FreezyBee\DataGridBundle\Column;
 use FreezyBee\DataGridBundle\Filter\DateRangeFilter;
 use FreezyBee\DataGridBundle\Filter\Filter;
 use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
+use FreezyBee\DataGridBundle\Filter\SelectBooleanFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
 use Symfony\Component\Templating\EngineInterface;
@@ -43,9 +44,15 @@ abstract class Column
     /** @var string|null */
     protected $customTemplate;
 
+    /** @var bool */
+    protected $allowExport = true;
+
+    /** @var bool */
+    protected $allowRender = true;
+
     /**
      * @var callable|null
-     * callable(mixed $value)
+     * callable(mixed $value, array $params)
      */
     protected $customRendererCallback;
 
@@ -138,7 +145,7 @@ abstract class Column
      */
     public function setSelectBooleanFilter(): self
     {
-        $this->filter = new SelectFilter(['Ano' => 1, 'Ne' => 0]);
+        $this->filter = new SelectBooleanFilter();
         return $this->setFilterable();
     }
 
@@ -237,6 +244,42 @@ abstract class Column
     }
 
     /**
+     * @return bool
+     */
+    public function isAllowExport(): bool
+    {
+        return $this->allowExport;
+    }
+
+    /**
+     * @param bool $allowExport
+     * @return Column
+     */
+    public function setAllowExport(bool $allowExport): self
+    {
+        $this->allowExport = $allowExport;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowRender(): bool
+    {
+        return $this->allowRender;
+    }
+
+    /**
+     * @param bool $allowRender
+     * @return Column
+     */
+    public function setAllowRender(bool $allowRender): self
+    {
+        $this->allowRender = $allowRender;
+        return $this;
+    }
+
+    /**
      * @param callable $customRendererCallback
      */
     public function setCustomRendererCallback(callable $customRendererCallback): void
@@ -283,16 +326,17 @@ abstract class Column
     /**
      * @param mixed $row
      * @param EngineInterface $engine
+     * @param array $params
      * @return string|null
      */
-    public function renderContent($row, EngineInterface $engine): ?string
+    public function renderContent($row, EngineInterface $engine, array $params = []): ?string
     {
         if ($this->customTemplate !== null) {
-            return $engine->render($this->customTemplate, ['item' => $row]);
+            return $engine->render($this->customTemplate, $params + ['item' => $row]);
         }
 
         if (is_callable($this->customRendererCallback)) {
-            return call_user_func($this->customRendererCallback, $row);
+            return call_user_func($this->customRendererCallback, $row, $params);
         }
 
         return null;

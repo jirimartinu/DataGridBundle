@@ -1,7 +1,11 @@
 {% set value = datagrid_accessor(item, propertyName) %}
 {% spaceless %}
     {% if value is same as(true) or value is same as(false) %}
-        {% if value %}<span class="badge badge-success">Ano</span>{% else %}<span class="badge badge-danger">Ne</span>{% endif %}
+        {% if export %}
+            {% if value %}Ano{% else %}Ne{% endif %}
+        {% else %}
+            {% if value %}<span class="badge badge-success">Ano</span>{% else %}<span class="badge badge-danger">Ne</span>{% endif %}
+        {% endif %}
     {% else %}
         {{ value }}
     {% endif %}

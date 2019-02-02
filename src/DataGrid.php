@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace FreezyBee\DataGridBundle;
 
-use FreezyBee\DataGridBundle\Column\ActionColumn;
 use FreezyBee\DataGridBundle\DataSource\DataSourceInterface;
+use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -17,6 +18,9 @@ class DataGrid
 {
     /** @var EngineInterface */
     private $engine;
+
+    /** @var DataGridExporterInterface */
+    private $exporter;
 
     /** @var DataSourceInterface */
     private $dataSource;
@@ -29,17 +33,20 @@ class DataGrid
 
     /**
      * @param EngineInterface $engine
+     * @param DataGridExporterInterface $exporter
      * @param DataSourceInterface $dataSource
      * @param DataGridConfig $config
      * @param string $name
      */
     public function __construct(
         EngineInterface $engine,
+        DataGridExporterInterface $exporter,
         DataSourceInterface $dataSource,
         DataGridConfig $config,
         string $name
     ) {
         $this->engine = $engine;
+        $this->exporter = $exporter;
         $this->dataSource = $dataSource;
         $this->config = $config;
         $this->name = $name;
@@ -50,6 +57,33 @@ class DataGrid
      * @return JsonResponse
      */
     public function ajax(Request $request): JsonResponse
+    {
+        $result = $this->processData($request, false);
+
+        return (new JsonResponse([
+            'draw' => $request->query->getInt('draw'),
+            'recordsTotal' => $result['totalCount'],
+            'recordsFiltered' => $result['filteredCount'],
+            'data' => $result['data'],
+        ]))->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+    }
+
+
+    /**
+     * @param Request $request
+     * @return Response
+     */
+    public function export(Request $request): Response
+    {
+        return $this->exporter->export($this->processData($request, true)['data']);
+    }
+
+    /**
+     * @param Request $request
+     * @param bool $export
+     * @return array
+     */
+    private function processData(Request $request, bool $export): array
     {
         $totalCount = $this->dataSource->getTotalCount();
 
@@ -63,7 +97,7 @@ class DataGrid
 
         // filters
         foreach ($query['columns'] as $index => $ajaxColumn) {
-            $value = $ajaxColumn['search']['value'];
+            $value = $ajaxColumn['search']['value'] ?? '';
             $column = $this->config->getColumns()[$index] ?? null;
 
             if ($value !== '' && $column !== null && $column->isFilterable()) {
@@ -73,22 +107,27 @@ class DataGrid
 
         $filteredCount = $this->dataSource->getFilteredCount();
 
-        // limit and offset
-        $this->dataSource->applyLimitAndOffset((int) $query['length'], (int) $query['start']);
-
-        $items = $this->dataSource->getData();
+        if (!$export) {
+            // limit and offset
+            $this->dataSource->applyLimitAndOffset((int) $query['length'], (int) $query['start']);
+        }
 
         $data = [];
-        foreach ($items as $item) {
-            $row = [];
-            foreach ($this->config->getColumns() as $column) {
-                if ($column instanceof ActionColumn) {
-                    continue;
-                }
-                $row[] = $column->renderContent($item, $this->engine);
+        foreach ($this->dataSource->getData() as $item) {
+            // custom export
+            if ($export && $this->config->getCustomExportCallback() !== null) {
+                $data[] = $this->config->getCustomExportCallback()($item);
+                continue;
             }
 
-            if ($this->config->getActionColumn()->hasActions()) {
+            $row = [];
+            foreach ($this->config->getColumns() as $column) {
+                if (($export && $column->isAllowExport()) || (!$export && $column->isAllowRender())) {
+                    $row[] = $column->renderContent($item, $this->engine, ['export' => $export]);
+                }
+            }
+
+            if (!$export && $this->config->getActionColumn()->hasActions()) {
                 $row[] = $this->engine->render('@FreezyBeeDataGrid/action.html.twig', [
                     'item' => $item,
                     'actions' => $this->config->getActionColumn()->getActions()
@@ -97,13 +136,13 @@ class DataGrid
             $data[] = $row;
         }
 
-        return (new JsonResponse([
-            'draw' => $request->query->getInt('draw'),
-            'recordsTotal' => $totalCount,
-            'recordsFiltered' => $filteredCount,
+        return [
             'data' => $data,
-        ]))->setEncodingOptions(JSON_UNESCAPED_UNICODE);
+            'totalCount' => $totalCount,
+            'filteredCount' => $filteredCount,
+        ];
     }
+
 
     /**
      * @return string
@@ -123,7 +162,8 @@ class DataGrid
                 'perPage' => $this->config->getDefaultPerPage(), $this->config->getColumns(),
                 'sortIndex' => $sortIndex,
                 'sortDir' => $this->config->getDefaultSortColumnDirection() ?? 'desc',
-            ]
+            ],
+            'allowExport' => $this->config->isAllowExport(),
         ]);
     }
 }

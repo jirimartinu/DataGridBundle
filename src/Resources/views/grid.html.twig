@@ -1,7 +1,7 @@
-<table class="table js-datagrid-table">
+<table class="table js-datagrid-table" data-datagrid="{{ name|replace({'\\': '_'}) }}">
     <thead>
     <tr>
-        {% for column in columns %}
+        {% for column in columns if column.allowRender %}
             <td>
                 {% if column.filterable %}
                     {{ datagrid_filter(column.filter, column.name, loop.index0) }}
@@ -13,7 +13,7 @@
         {% endif %}
     </tr>
     <tr>
-        {% for column in columns %}
+        {% for column in columns if column.allowRender %}
             <th data-name="{{ column.name }}" data-orderable="{{ column.sortable ? 'true' : 'false' }}">
                 {{ column.label }}
             </th>
@@ -27,54 +27,62 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        $('.js-datagrid-table').each(function () {
-            const table = $(this).DataTable({
-                processing: true,
-                serverSide: true,
-                pageLength: {{ default.perPage }},
-                order: [[{{ default.sortIndex }}, '{{ default.sortDir }}']],
-                ajax: '{{ path('datagrid_ajax', {name: name}) }}'
-            });
+        const table = $('.js-datagrid-table[data-datagrid="{{ name|replace({'\\': '_'}) }}"]').DataTable({
+            processing: true,
+            serverSide: true,
+            pageLength: {{ default.perPage }},
+            order: [[{{ default.sortIndex }}, '{{ default.sortDir }}']],
+            ajax: '{{ path('datagrid_ajax', {name: name}) }}'
+        });
 
-            const container = $(table.table().container());
+        const container = $(table.table().container());
 
-            let timeout = null;
+        let timeout = null;
 
-            container.on('keyup', 'thead input', function () {
-                const self = $(this);
-                clearTimeout(timeout);
-                timeout = setTimeout(function () {
-                    table
-                        .column(self.data('index'))
-                        .search(self.val())
-                        .draw();
-                }, 200);
-            });
-
-            container.on('change', 'thead select', function () {
-                const self = $(this);
+        container.on('keyup', 'thead input', function () {
+            const self = $(this);
+            clearTimeout(timeout);
+            timeout = setTimeout(function () {
                 table
                     .column(self.data('index'))
                     .search(self.val())
                     .draw();
-            });
+            }, 200);
+        });
 
-            container.find('thead .js-datagrid-flatpickr').each(function () {
-                const self = $(this);
-                flatpickr(this, {
-                    dateFormat: 'd.m.Y',
-                    locale: 'cs',
-                    onChange: function (selectedDates) {
-                        if (selectedDates.length === 2) {
-                            console.log(selectedDates);
-                            table
-                                .column(self.data('index'))
-                                .search(self.val())
-                                .draw();
-                        }
+        container.on('change', 'thead select', function () {
+            const self = $(this);
+            table
+                .column(self.data('index'))
+                .search(self.val())
+                .draw();
+        });
+
+        container.find('thead .js-datagrid-flatpickr').each(function () {
+            const self = $(this);
+            flatpickr(this, {
+                dateFormat: 'd.m.Y',
+                locale: 'cs',
+                onChange: function (selectedDates) {
+                    if (selectedDates.length === 2) {
+                        table
+                            .column(self.data('index'))
+                            .search(self.val())
+                            .draw();
                     }
-                });
+                }
             });
         });
+
+        {% if allowExport %}
+            const exportBtn = $('<a href="#">Export</a>').on('click', function (e) {
+                e.preventDefault();
+                window.open('{{ path('datagrid_export', {name: name}) }}?' + $.param(table.ajax.params()), '_blank');
+            });
+
+            container.find('.dataTables_filter').html(exportBtn);
+        {% else %}
+            container.find('.dataTables_filter').html('');
+        {% endif %}
     });
 </script>

@@ -2,6 +2,10 @@ services:
   FreezyBee\DataGridBundle\DataGridFactory:
     autowire: true
 
+  FreezyBee\DataGridBundle\Export\:
+    resource: '../../Export/*'
+    autowire: true
+
   FreezyBee\DataGridBundle\Twig\DataGridExtension:
     autowire: true
     tags: ['twig.extension']

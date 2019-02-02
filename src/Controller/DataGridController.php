@@ -7,6 +7,7 @@ namespace FreezyBee\DataGridBundle\Controller;
 use FreezyBee\DataGridBundle\DataGridFactory;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
@@ -29,9 +30,27 @@ class DataGridController
      * @param Request $request
      * @return JsonResponse
      */
-    public function handle(string $name, Request $request): JsonResponse
+    public function ajax(string $name, Request $request): JsonResponse
     {
-        $name = preg_replace('/\//', '\\', $name) ?? '';
-        return $this->dataGridFactory->create($name)->ajax($request);
+        return $this->dataGridFactory->create(self::processName($name))->ajax($request);
+    }
+
+    /**
+     * @param string $name
+     * @param Request $request
+     * @return Response
+     */
+    public function export(string $name, Request $request): Response
+    {
+        return $this->dataGridFactory->create(self::processName($name))->export($request);
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    private static function processName(string $name): string
+    {
+        return preg_replace('/\//', '\\', $name) ?? '';
     }
 }

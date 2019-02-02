@@ -8,6 +8,7 @@ use Doctrine\ORM\QueryBuilder;
 use FreezyBee\DataGridBundle\DataSource\ArrayDataSource;
 use FreezyBee\DataGridBundle\DataSource\DoctrineDataSource;
 use FreezyBee\DataGridBundle\Exception\DataGridException;
+use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -26,19 +27,25 @@ class DataGridFactory
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
 
+    /** @var DataGridExporterInterface */
+    private $exporter;
+
     /**
      * @param ContainerInterface $container
      * @param EngineInterface $engine
      * @param PropertyAccessorInterface $propertyAccessor
+     * @param DataGridExporterInterface $exporter
      */
     public function __construct(
         ContainerInterface $container,
         EngineInterface $engine,
-        PropertyAccessorInterface $propertyAccessor
+        PropertyAccessorInterface $propertyAccessor,
+        DataGridExporterInterface $exporter
     ) {
         $this->container = $container;
         $this->engine = $engine;
         $this->propertyAccessor = $propertyAccessor;
+        $this->exporter = $exporter;
     }
 
     /**
@@ -63,6 +70,6 @@ class DataGridFactory
             throw new DataGridException('Invalid datasource');
         }
 
-        return new DataGrid($this->engine, $dataSourceImpl, $config, $className);
+        return new DataGrid($this->engine, $this->exporter, $dataSourceImpl, $config, $className);
     }
 }

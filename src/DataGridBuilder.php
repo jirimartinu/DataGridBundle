@@ -26,6 +26,12 @@ class DataGridBuilder
     /** @var ActionColumn */
     private $actionColumn;
 
+    /**
+     * @var callable|null
+     * callable(mixed $item)
+     */
+    private $customExportCallback;
+
     /** @var string|null */
     private $defaultSortColumnName;
 
@@ -34,6 +40,9 @@ class DataGridBuilder
 
     /** @var int */
     private $defaultPerPage = 10;
+
+    /** @var bool */
+    private $allowExport = false;
 
     /**
      */
@@ -99,13 +108,22 @@ class DataGridBuilder
     }
 
     /**
-     * @param string $name
      * @param Column $column
      * @return Column
      */
-    public function add(string $name, Column $column): Column
+    public function add(Column $column): Column
     {
         return $this->columns[] = $column;
+    }
+
+    /**
+     * @param callable $customExportCallback
+     * @return DataGridBuilder
+     */
+    public function setCustomExportCallback(callable $customExportCallback): self
+    {
+        $this->customExportCallback = $customExportCallback;
+        return $this;
     }
 
     /**
@@ -131,6 +149,16 @@ class DataGridBuilder
     }
 
     /**
+     * @param bool $allowExport
+     * @return DataGridBuilder
+     */
+    public function setAllowExport(bool $allowExport = true): self
+    {
+        $this->allowExport = $allowExport;
+        return $this;
+    }
+
+    /**
      * @internal
      * @return DataGridConfig
      */
@@ -140,9 +168,11 @@ class DataGridBuilder
             $this->dataSource,
             $this->columns,
             $this->actionColumn,
+            $this->customExportCallback,
             $this->defaultSortColumnName,
             $this->defaultSortColumnDirection,
-            $this->defaultPerPage
+            $this->defaultPerPage,
+            $this->allowExport
         );
     }
 }

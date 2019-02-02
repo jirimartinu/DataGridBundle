@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace FreezyBee\DataGridBundle\Tests\App;
 
 use Doctrine\Bundle\DoctrineBundle\DoctrineBundle;
-use FreezyBee\DataGridBundle\Controller\DataGridController;
 use FreezyBee\DataGridBundle\FreezyBeeDataGridBundle;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
@@ -14,10 +13,16 @@ use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Routing\RouteCollectionBuilder;
 
+/**
+ * @author Jakub Janata <jakubjanata@gmail.com>
+ */
 class Kernel extends \Symfony\Component\HttpKernel\Kernel
 {
     use MicroKernelTrait;
 
+    /**
+     * {@inheritdoc}
+     */
     public function registerBundles()
     {
         $bundles = [
@@ -32,13 +37,18 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
         }
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configureRoutes(RouteCollectionBuilder $routes): void
     {
+        $routes->import(__DIR__ . '/../../src/Resources/config/routes.yaml');
         $routes->add('/', AppController::class . '::index');
-        $routes->add('/grid/{name}', DataGridController::class . '::handle', 'datagrid_ajax')
-            ->addRequirements(['name' => '.*']);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     protected function configureContainer(ContainerBuilder $c, LoaderInterface $loader): void
     {
         $c->setParameter('kernel.secret', 'x');
@@ -50,6 +60,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
             ->setAutoconfigured(true);
 
         $c->loadFromExtension('framework', [
+            'test' => true,
             'templating' => [
                 'engines' => ['twig'],
             ],

@@ -22,6 +22,12 @@ class DataGridConfig
     /** @var ActionColumn */
     private $actionColumn;
 
+    /**
+     * @var callable|null
+     * callable(mixed $item)
+     */
+    private $customExportCallback;
+
     /** @var string|null */
     private $defaultSortColumnName;
 
@@ -31,28 +37,37 @@ class DataGridConfig
     /** @var int */
     private $defaultPerPage;
 
+    /** @var bool */
+    private $allowExport;
+
     /**
      * @param array|QueryBuilder|null $dataSource
      * @param Column[] $columns
      * @param ActionColumn $actionColumn
+     * @param callable|null $customExportCallback
      * @param string|null $defaultSortColumnName
      * @param string|null $defaultSortColumnDirection
      * @param int $defaultPerPage
+     * @param bool $allowExport
      */
     public function __construct(
         $dataSource,
         array $columns,
         ActionColumn $actionColumn,
+        ?callable $customExportCallback,
         ?string $defaultSortColumnName,
         ?string $defaultSortColumnDirection,
-        int $defaultPerPage
+        int $defaultPerPage,
+        bool $allowExport
     ) {
         $this->dataSource = $dataSource;
         $this->columns = $columns;
         $this->actionColumn = $actionColumn;
+        $this->customExportCallback = $customExportCallback;
         $this->defaultSortColumnName = $defaultSortColumnName;
         $this->defaultSortColumnDirection = $defaultSortColumnDirection;
         $this->defaultPerPage = $defaultPerPage;
+        $this->allowExport = $allowExport;
     }
 
     /**
@@ -80,6 +95,14 @@ class DataGridConfig
     }
 
     /**
+     * @return callable|null
+     */
+    public function getCustomExportCallback(): ?callable
+    {
+        return $this->customExportCallback;
+    }
+
+    /**
      * @return string|null
      */
     public function getDefaultSortColumnName(): ?string
@@ -101,5 +124,13 @@ class DataGridConfig
     public function getDefaultPerPage(): int
     {
         return $this->defaultPerPage;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAllowExport(): bool
+    {
+        return $this->allowExport;
     }
 }

@@ -1,5 +1,5 @@
 <select class="custom-select form-control" name="{{ name }}" data-index="{{ index }}">
-    <option>Vše</option>
+    <option value="">Vše</option>
     {% for label,value in options %}
         <option value="{{ value }}">{{ label|trans }}</option>
     {% endfor %}

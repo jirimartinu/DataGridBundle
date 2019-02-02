@@ -17,11 +17,15 @@ class StringParserHelper
      */
     public static function parseStringToDateArray(string $value): array
     {
-        if (strpos($value, ' do ') === false) {
+        // TODO refactoring
+        $cs = strpos($value, ' do ') !== false;
+        $en = strpos($value, ' to ') !== false;
+
+        if (!$cs && !$en) {
             $from = $value;
             $to = $value;
         } else {
-            [$from, $to] = explode(' do ', $value, 2);
+            [$from, $to] = explode($cs ? ' do ' : ' to ', $value, 2);
         }
 
         return [new DateTime($from), (new DateTime($to))->setTime(23, 59, 59)];
