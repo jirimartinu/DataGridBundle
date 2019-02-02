@@ -7,8 +7,14 @@
         <env name="KERNEL_CLASS" value="FreezyBee\DataGridBundle\Tests\App\Kernel"/>
     </php>
 
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./src</directory>
+        </whitelist>
+    </filter>
+
     <testsuites>
-        <testsuite name="My Test Suite">
+        <testsuite name="Test Suite">
             <directory>./tests/*</directory>
         </testsuite>
     </testsuites>

@@ -14,6 +14,24 @@ install:
     - composer install --no-interaction --prefer-dist
 
 script:
-    - php vendor/bin/phpcs --standard=PSR12 --ignore=./src/Resources ./src ./tests
-    - php vendor/bin/phpstan analyse ./src ./tests --level 7
     - php vendor/bin/phpunit
+
+jobs:
+    include:
+        -   stage: Code Static Analyze (phpstan)
+            php: 7.2
+            script:
+                - php vendor/bin/phpstan analyse ./src ./tests --level 7
+
+        -   stage: Code Standard Checker
+            php: 7.2
+            script:
+                - php vendor/bin/phpcs --standard=PSR12 --ignore=./src/Resources ./src ./tests
+
+        -   stage: Code Coverage
+            php: 7.2
+            script:
+                - php vendor/bin/phpunit --coverage-clover ./coverage.xml
+            after_script:
+                - wget https://github.com/satooshi/php-coveralls/releases/download/v2.1.0/php-coveralls.phar
+                - php php-coveralls.phar --verbose
