@@ -92,13 +92,13 @@ class DataGrid
         // sort
         $orderByIndex = $query['order'][0]['column'] ?? null;
         if ($orderByIndex !== null) {
-            $this->dataSource->applySort($this->config->getColumns()[$orderByIndex], $query['order'][0]['dir']);
+            $this->dataSource->applySort($this->config->getRenderedColumns()[$orderByIndex], $query['order'][0]['dir']);
         }
 
         // filters
         foreach ($query['columns'] as $index => $ajaxColumn) {
             $value = $ajaxColumn['search']['value'] ?? '';
-            $column = $this->config->getColumns()[$index] ?? null;
+            $column = $this->config->getRenderedColumns()[$index] ?? null;
 
             if ($value !== '' && $column !== null && $column->isFilterable()) {
                 $this->dataSource->applyFilter($column, $value);
@@ -122,7 +122,9 @@ class DataGrid
 
             $row = [];
             foreach ($this->config->getColumns() as $column) {
-                if (($export && $column->isAllowExport()) || (!$export && $column->isAllowRender())) {
+                if ($export && $column->isAllowExport()) {
+                    $row[$column->getLabel()] = $column->renderContent($item, $this->engine, ['export' => $export]);
+                } elseif (!$export && $column->isAllowRender()) {
                     $row[] = $column->renderContent($item, $this->engine, ['export' => $export]);
                 }
             }
@@ -151,15 +153,20 @@ class DataGrid
     {
         $sortIndex = 0;
         if ($this->config->getDefaultSortColumnName() !== null) {
-            $sortIndex = array_search($this->config->getDefaultSortColumnName(), $this->config->getColumns(), true);
+            foreach ($this->config->getRenderedColumns() as $index => $column) {
+                if ($column->getName() === $this->config->getDefaultSortColumnName()) {
+                    $sortIndex = $index;
+                    break;
+                }
+            }
         }
 
         return $this->engine->render('@FreezyBeeDataGrid/grid.html.twig', [
             'name' => $this->name,
-            'columns' => $this->config->getColumns(),
+            'columns' => $this->config->getRenderedColumns(),
             'actionColumn' => $this->config->getActionColumn(),
             'default' => [
-                'perPage' => $this->config->getDefaultPerPage(), $this->config->getColumns(),
+                'perPage' => $this->config->getDefaultPerPage(),
                 'sortIndex' => $sortIndex,
                 'sortDir' => $this->config->getDefaultSortColumnDirection() ?? 'desc',
             ],

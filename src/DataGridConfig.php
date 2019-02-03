@@ -87,6 +87,16 @@ class DataGridConfig
     }
 
     /**
+     * @return Column[]
+     */
+    public function getRenderedColumns(): array
+    {
+        return array_filter($this->columns, function (Column $column) {
+            return $column->isAllowRender();
+        });
+    }
+
+    /**
      * @return ActionColumn
      */
     public function getActionColumn(): ActionColumn

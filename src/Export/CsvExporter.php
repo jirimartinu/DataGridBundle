@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FreezyBee\DataGridBundle\Export;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 
 /**
@@ -28,7 +29,9 @@ class CsvExporter implements DataGridExporterInterface
      */
     public function export(array $data, string $format = null): Response
     {
-        $csv = $this->serializer->serialize($data, 'csv');
+        $csv = $this->serializer->serialize($data, 'csv', [
+            CsvEncoder::DELIMITER_KEY => ';',
+        ]);
 
         $response = new Response(\chr(239) . \chr(187) . \chr(191) . $csv);
         $response->headers->set('Content-Type', 'text/csv');

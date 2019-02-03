@@ -1,7 +1,7 @@
 <table class="table js-datagrid-table" data-datagrid="{{ name|replace({'\\': '_'}) }}">
     <thead>
     <tr>
-        {% for column in columns if column.allowRender %}
+        {% for column in columns %}
             <td>
                 {% if column.filterable %}
                     {{ datagrid_filter(column.filter, column.name, loop.index0) }}
@@ -13,7 +13,7 @@
         {% endif %}
     </tr>
     <tr>
-        {% for column in columns if column.allowRender %}
+        {% for column in columns %}
             <th data-name="{{ column.name }}" data-orderable="{{ column.sortable ? 'true' : 'false' }}">
                 {{ column.label }}
             </th>
