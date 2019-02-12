@@ -32,7 +32,28 @@
             serverSide: true,
             pageLength: {{ default.perPage }},
             order: [[{{ default.sortIndex }}, '{{ default.sortDir }}']],
-            ajax: '{{ path('datagrid_ajax', {name: name}) }}'
+            ajax: '{{ path('datagrid_ajax', {name: name}) }}',
+            language: {
+                emptyTable: 'Žádné položky',
+                info: 'Zobrazeno _START_ - _END_ z celkem _TOTAL_ položek',
+                infoEmpty: 'Žádné položky',
+                infoFiltered: '(vyfiltrováno z celkem _MAX_ položek)',
+                lengthMenu: 'Zobrazit _MENU_ na stránku',
+                loadingRecords: 'Načítání...',
+                processing: 'Zpracování...',
+                search: 'Vyhledat:',
+                zeroRecords: 'Žádné položky nebyly nalezeny',
+                paginate: {
+                    first: 'První',
+                    last: 'Poslední',
+                    next: 'Další',
+                    previous: 'Předchozí'
+                },
+                aria: {
+                    sortAscending: ': řadit sestupně',
+                    sortDescending: ': řadit vzestupně'
+                }
+            }
         });
 
         const container = $(table.table().container());
