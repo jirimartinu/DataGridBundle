@@ -1,1 +1,1 @@
-{{ datagrid_accessor(item, propertyName)|date(format) }}
+{% set val = datagrid_accessor(item, propertyName) %}{{ val ? val|date(format) : '' }}
