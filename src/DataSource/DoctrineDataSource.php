@@ -10,6 +10,7 @@ use FreezyBee\DataGridBundle\Column\Column;
 use FreezyBee\DataGridBundle\Filter\DateRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
+use FreezyBee\DataGridBundle\Filter\TextFilter;
 use FreezyBee\DataGridBundle\Utils\DataGridMagicHelper;
 use FreezyBee\DataGridBundle\Utils\StringParserHelper;
 
@@ -94,16 +95,16 @@ class DoctrineDataSource implements DataSourceInterface
                     ->andWhere("$whereName >= ?$fromParam AND $whereName <= ?$toParam")
                     ->setParameter($fromParam, $from)
                     ->setParameter($toParam, $to);
-            }
-        } else {
-            $whereQuery = [];
-            foreach ($column->getFilterColumnNames() as $filterColumnName) {
-                $whereQuery[] = "{$this->resolveColumnPath($filterColumnName)} LIKE ?$this->paramCounter";
-            }
+            } elseif ($filter instanceof TextFilter) {
+                $whereQuery = [];
+                foreach ($column->getFilterColumnNames() as $filterColumnName) {
+                    $whereQuery[] = "{$this->resolveColumnPath($filterColumnName)} LIKE ?$this->paramCounter";
+                }
 
-            $this->queryBuilder
-                ->andWhere(implode(' OR ', $whereQuery))
-                ->setParameter($this->paramCounter++, "%$value%");
+                $this->queryBuilder
+                    ->andWhere(implode(' OR ', $whereQuery))
+                    ->setParameter($this->paramCounter++, "%$value%");
+            }
         }
     }
 
