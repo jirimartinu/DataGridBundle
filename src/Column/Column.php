@@ -134,9 +134,10 @@ abstract class Column
     /**
      * @return Column
      */
-    public function setTextFilter(): self
+    public function setTextFilter(?string $placeholder = null): self
     {
         $this->filter = new TextFilter();
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }
 
@@ -144,36 +145,40 @@ abstract class Column
      * @param array $options
      * @return Column
      */
-    public function setSelectFilter(array $options): self
+    public function setSelectFilter(array $options, ?string $placeholder = null): self
     {
         $this->filter = new SelectFilter($options);
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }
 
     /**
      * @return Column
      */
-    public function setSelectBooleanFilter(): self
+    public function setSelectBooleanFilter(?string $placeholder = null): self
     {
         $this->filter = new SelectBooleanFilter();
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }
 
     /**
      * @return Column
      */
-    public function setDateRangeFilter(): self
+    public function setDateRangeFilter(?string $placeholder = null): self
     {
         $this->filter = new DateRangeFilter();
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }
 
     /**
      * @return Column
      */
-    public function setNumberRangeFilter(): self
+    public function setNumberRangeFilter(?string $placeholder = null): self
     {
         $this->filter = new NumberRangeFilter();
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }
 
@@ -186,10 +191,12 @@ abstract class Column
     public function setSelectEntityFilter(
         string $entityClassName,
         $labelOrCallback,
-        ?callable $filterCallback = null
+        ?callable $filterCallback = null,
+        ?string $placeholder = null
     ): self {
         $this->filterColumnNames = [$this->name];
         $this->filter = new SelectEntityFilter($entityClassName, $labelOrCallback, $filterCallback);
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }
 
@@ -212,18 +219,6 @@ abstract class Column
     public function isFilterable(): bool
     {
         return $this->filterable;
-    }
-
-    /**
-     * @param string|null $placeholder
-     * @return Column
-     */
-    public function setFilterPlaceholder(?string $placeholder = ''): self
-    {
-        if ($this->filter instanceof Filter) {
-            $this->filter->setPlaceholder($placeholder);
-        }
-        return $this;
     }
 
     /**

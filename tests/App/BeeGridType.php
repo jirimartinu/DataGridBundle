@@ -25,8 +25,7 @@ class BeeGridType implements DataGridTypeInterface
         ]);
 
         $builder->addText('a', 'A')
-            ->setTextFilter()
-            ->setFilterPlaceholder('A')
+            ->setTextFilter('A')
             ->setSortable();
 
         $builder->addDateTime('b', 'B', 'j.n.Y')
