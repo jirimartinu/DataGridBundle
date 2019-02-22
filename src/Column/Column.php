@@ -10,6 +10,7 @@ use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectBooleanFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
+use FreezyBee\DataGridBundle\Filter\TextFilter;
 use Symfony\Component\Templating\EngineInterface;
 
 /**
@@ -131,6 +132,15 @@ abstract class Column
     }
 
     /**
+     * @return Column
+     */
+    public function setTextFilter(): self
+    {
+        $this->filter = new TextFilter();
+        return $this->setFilterable();
+    }
+
+    /**
      * @param array $options
      * @return Column
      */
@@ -202,6 +212,18 @@ abstract class Column
     public function isFilterable(): bool
     {
         return $this->filterable;
+    }
+
+    /**
+     * @param string|null $placeholder
+     * @return Column
+     */
+    public function setFilterPlaceholder(?string $placeholder = ''): self
+    {
+        if ($this->filter instanceof Filter) {
+            $this->filter->setPlaceholder($placeholder);
+        }
+        return $this;
     }
 
     /**
