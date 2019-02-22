@@ -11,6 +11,7 @@ use FreezyBee\DataGridBundle\Filter\Filter;
 use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
+use FreezyBee\DataGridBundle\Filter\TextFilter;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Twig\Environment;
@@ -72,6 +73,8 @@ class DataGridExtension extends AbstractExtension
      */
     public function renderFilter(Environment $engine, ?Filter $filter, string $name, int $index): string
     {
+        $template = '';
+
         switch (true) {
             case $filter instanceof SelectEntityFilter:
                 $labelOrCallback = $filter->getLabelOrCallback();
@@ -106,25 +109,25 @@ class DataGridExtension extends AbstractExtension
                     $items = array_flip($items);
                 }
 
-                return self::renderHtmlSelect($engine, $items, $name, $index);
+                return self::renderHtmlSelect($engine, $items, $name, $index, $filter->getPlaceholder());
             case $filter instanceof SelectFilter:
-                return self::renderHtmlSelect($engine, $filter->getOptions(), $name, $index);
+                return self::renderHtmlSelect($engine, $filter->getOptions(), $name, $index, $filter->getPlaceholder());
             case $filter instanceof DateRangeFilter:
-                return $engine->render('@FreezyBeeDataGrid/filter/date_range_picker.html.twig', [
-                    'name' => $name,
-                    'index' => $index
-                ]);
+                $template = '@FreezyBeeDataGrid/filter/date_range_picker.html.twig';
+                break;
             case $filter instanceof NumberRangeFilter:
-                return $engine->render('@FreezyBeeDataGrid/filter/number_range_picker.html.twig', [
-                    'name' => $name,
-                    'index' => $index
-                ]);
-            default:
-                return $engine->render('@FreezyBeeDataGrid/filter/text.html.twig', [
-                    'name' => $name,
-                    'index' => $index
-                ]);
+                $template = '@FreezyBeeDataGrid/filter/number_range_picker.html.twig';
+                break;
+            case $filter instanceof TextFilter:
+                $template = '@FreezyBeeDataGrid/filter/text.html.twig';
+                break;
         }
+
+        return $engine->render($template, [
+            'name' => $name,
+            'index' => $index,
+            'placeholder' => $filter->getPlaceholder()
+        ]);
     }
 
     /**
@@ -149,14 +152,16 @@ class DataGridExtension extends AbstractExtension
      * @param array $options
      * @param string $name
      * @param int $index
+     * @param string $placeholder
      * @return string
      */
-    private static function renderHtmlSelect(Environment $engine, array $options, string $name, int $index): string
+    private static function renderHtmlSelect(Environment $engine, array $options, string $name, int $index, string $placeholder): string
     {
         return $engine->render('@FreezyBeeDataGrid/filter/select.html.twig', [
             'options' => $options,
             'name' => $name,
-            'index' => $index
+            'index' => $index,
+            'placeholder' => $placeholder
         ]);
     }
 }

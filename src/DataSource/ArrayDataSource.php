@@ -10,6 +10,7 @@ use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectBooleanFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
+use FreezyBee\DataGridBundle\Filter\TextFilter;
 use FreezyBee\DataGridBundle\Utils\StringParserHelper;
 use Symfony\Component\PropertyAccess\Exception\UnexpectedTypeException;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
@@ -131,16 +132,17 @@ class ArrayDataSource implements DataSourceInterface
                         return ($existsValue >= $from && $existsValue <= $to);
                     });
                     return;
+                case $filter instanceof TextFilter:
+                    $propertyPath = $column->getContentColumnName();
+                    $value = mb_strtolower($value);
+
+                    $this->data = array_filter($this->data, function ($item) use ($propertyPath, $value): bool {
+                        $existsValue = (string) $this->accessValue($item, $propertyPath);
+                        return mb_stripos($existsValue, $value) !== false;
+                    });
+                    return;
             }
         }
-
-        $propertyPath = $column->getContentColumnName();
-        $value = mb_strtolower($value);
-
-        $this->data = array_filter($this->data, function ($item) use ($propertyPath, $value): bool {
-            $existsValue = (string) $this->accessValue($item, $propertyPath);
-            return mb_stripos($existsValue, $value) !== false;
-        });
     }
 
     /**
