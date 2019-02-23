@@ -109,9 +109,9 @@ class DataGridExtension extends AbstractExtension
                     $items = array_flip($items);
                 }
 
-                return self::renderHtmlSelect($engine, $items, $name, $index);
+                return self::renderHtmlSelect($engine, $items, $name, $index, $filter->getPlaceholder());
             case $filter instanceof SelectFilter:
-                return self::renderHtmlSelect($engine, $filter->getOptions(), $name, $index);
+                return self::renderHtmlSelect($engine, $filter->getOptions(), $name, $index, $filter->getPlaceholder());
             case $filter instanceof DateRangeFilter:
                 $template = '@FreezyBeeDataGrid/filter/date_range_picker.html.twig';
                 break;
@@ -126,7 +126,7 @@ class DataGridExtension extends AbstractExtension
         return $engine->render($template, [
             'name' => $name,
             'index' => $index,
-            'placeholder' => $filter ? $filter->getPlaceholder() : null
+            'placeholder' => $filter->getPlaceholder()
         ]);
     }
 
@@ -152,14 +152,16 @@ class DataGridExtension extends AbstractExtension
      * @param array $options
      * @param string $name
      * @param int $index
+     * @param string $placeholder
      * @return string
      */
-    private static function renderHtmlSelect(Environment $engine, array $options, string $name, int $index): string
+    private static function renderHtmlSelect(Environment $engine, array $options, string $name, int $index, string $placeholder): string
     {
         return $engine->render('@FreezyBeeDataGrid/filter/select.html.twig', [
             'options' => $options,
             'name' => $name,
-            'index' => $index
+            'index' => $index,
+            'placeholder' => $placeholder
         ]);
     }
 }
