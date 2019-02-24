@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace FreezyBee\DataGridBundle\DataSource;
 
+use \ReflectionProperty;
+use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\Embedded;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use FreezyBee\DataGridBundle\Column\Column;
@@ -28,13 +31,18 @@ class DoctrineDataSource implements DataSourceInterface
     /** @var int */
     private $paramCounter = 0;
 
+    /** @var AnnotationReader */
+    private $annotationReader;
+
     /**
+     * DoctrineDataSource constructor.
      * @param QueryBuilder $queryBuilder
      */
     public function __construct(QueryBuilder $queryBuilder)
     {
         $this->queryBuilder = $queryBuilder;
         $this->rootAlias = $this->queryBuilder->getRootAliases()[0];
+        $this->annotationReader = new AnnotationReader();
     }
 
     /**
@@ -138,8 +146,25 @@ class DoctrineDataSource implements DataSourceInterface
 
         // add to join
         [$entity] = explode('.', $columnPath);
+
+        if ($this->isEmbeddableEntity($entity)) {
+            return "$this->rootAlias.{$columnPath}";
+        }
+
         DataGridMagicHelper::trySafelyApplyJoin($this->queryBuilder, "$this->rootAlias.$entity");
 
         return $columnPath;
+    }
+
+    /**
+     * @param string $entity
+     * @return bool
+     */
+    private function isEmbeddableEntity(string $entity): bool
+    {
+        $reflectionProperty = new ReflectionProperty($this->queryBuilder->getRootEntities()[0], $entity);
+        $embeddableAnnotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, Embedded::class);
+
+        return $embeddableAnnotation !== null;
     }
 }
