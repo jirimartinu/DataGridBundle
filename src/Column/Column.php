@@ -349,7 +349,10 @@ abstract class Column
     public function renderContent($row, EngineInterface $engine, array $params = []): ?string
     {
         if ($this->customTemplate !== null) {
-            return $engine->render($this->customTemplate, $params + ['item' => $row]);
+            return $engine->render($this->customTemplate, [
+                    'item' => $row,
+                    'propertyName' => $this->contentColumnName,
+                ] + $params);
         }
 
         if (is_callable($this->customRendererCallback)) {
