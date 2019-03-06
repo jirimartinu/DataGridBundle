@@ -50,6 +50,9 @@ abstract class Column
     /** @var bool */
     protected $allowRender = true;
 
+    /** @var array */
+    protected $templateParams = [];
+
     /**
      * @var callable|null
      * callable(mixed $value, array $params)
@@ -235,11 +238,15 @@ abstract class Column
 
     /**
      * @param string $customTemplate
+     * @param array $params
      * @return Column
      */
-    public function setCustomTemplate(string $customTemplate): self
+    public function setCustomTemplate(string $customTemplate, array $params = []): self
     {
         $this->customTemplate = $customTemplate;
+        if ($params) {
+            $this->templateParams = $params;
+        }
         return $this;
     }
 
@@ -281,10 +288,12 @@ abstract class Column
 
     /**
      * @param callable $customRendererCallback
+     * @return Column
      */
-    public function setCustomRendererCallback(callable $customRendererCallback): void
+    public function setCustomRendererCallback(callable $customRendererCallback): self
     {
         $this->customRendererCallback = $customRendererCallback;
+        return $this;
     }
 
     /**
@@ -324,6 +333,22 @@ abstract class Column
     }
 
     /**
+     * @return array
+     */
+    public function getTemplateParams(): array
+    {
+        return $this->templateParams;
+    }
+
+    /**
+     * @param array $params
+     */
+    public function setTemplateParams(array $params): void
+    {
+        $this->templateParams = $params;
+    }
+
+    /**
      * @param mixed $row
      * @param EngineInterface $engine
      * @param array $params
@@ -332,7 +357,7 @@ abstract class Column
     public function renderContent($row, EngineInterface $engine, array $params = []): ?string
     {
         if ($this->customTemplate !== null) {
-            return $engine->render($this->customTemplate, $params + ['item' => $row]);
+            return $engine->render($this->customTemplate, $params + $this->templateParams + ['item' => $row]);
         }
 
         if (is_callable($this->customRendererCallback)) {
