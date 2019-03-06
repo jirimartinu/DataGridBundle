@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FreezyBee\DataGridBundle\Tests\E2E;
 
 use FreezyBee\DataGridBundle\Tests\App\BeeGridType;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Client;
 use Symfony\Component\Panther\PantherTestCase;
 
@@ -89,8 +90,24 @@ class SmokeTest extends PantherTestCase
         $expected .= 'name2;1.2.2019;9;Ano';
 
         $response = $client->getResponse();
-        self::assertContains('text/csv', $response->headers->get('Content-Type'));
-        self::assertContains('attachment; filename="export.csv"', $response->headers->get('Content-Disposition'));
-        self::assertContains($expected, $response->getContent());
+        self::assertStringContainsString('text/csv', self::getHeader($response, 'Content-Type'));
+        self::assertStringContainsString(
+            'attachment; filename="export.csv"',
+            self::getHeader($response, 'Content-Disposition')
+        );
+        self::assertStringContainsString($expected, $response->getContent());
+    }
+
+    private static function getHeader(Response $response, string $name): string
+    {
+        $header = $response->headers->get($name);
+
+        if (is_string($header)) {
+            return $header;
+        }
+
+        // phpstan hack
+        self::assertIsString($header);
+        return '';
     }
 }
