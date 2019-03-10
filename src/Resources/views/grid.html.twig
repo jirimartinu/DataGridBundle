@@ -1,3 +1,4 @@
+{% trans_default_domain 'datagrid' %}
 <table class="table js-datagrid-table" data-datagrid="{{ name|replace({'\\': '_'}) }}">
     <thead>
     <tr>
@@ -34,24 +35,24 @@
             order: [[{{ default.sortIndex }}, '{{ default.sortDir }}']],
             ajax: '{{ path('datagrid_ajax', {name: name}) }}',
             language: {
-                emptyTable: 'Žádné položky',
-                info: 'Zobrazeno _START_ - _END_ z celkem _TOTAL_ položek',
-                infoEmpty: 'Žádné položky',
-                infoFiltered: '(vyfiltrováno z celkem _MAX_ položek)',
-                lengthMenu: 'Zobrazit _MENU_ na stránku',
-                loadingRecords: 'Načítání...',
-                processing: 'Zpracování...',
-                search: 'Vyhledat:',
-                zeroRecords: 'Žádné položky nebyly nalezeny',
+                emptyTable: '{{ 'grid.emptyTable'|trans }}',
+                info: '{{ 'grid.info'|trans }}',
+                infoEmpty: '{{ 'grid.infoEmpty'|trans }}',
+                infoFiltered: '{{ 'grid.infoFiltered'|trans }}',
+                lengthMenu: '{{ 'grid.lengthMenu'|trans }}',
+                loadingRecords: '{{ 'grid.loadingRecords'|trans }}',
+                processing: '{{ 'grid.processing'|trans }}',
+                search: '{{ 'grid.search'|trans }}',
+                zeroRecords: '{{ 'grid.zeroRecords'|trans }}',
                 paginate: {
-                    first: 'První',
-                    last: 'Poslední',
-                    next: 'Další',
-                    previous: 'Předchozí'
+                    first: '{{ 'grid.paginate.first'|trans }}',
+                    last: '{{ 'grid.paginate.last'|trans }}',
+                    next: '{{ 'grid.paginate.next'|trans }}',
+                    previous: '{{ 'grid.paginate.previous'|trans }}'
                 },
                 aria: {
-                    sortAscending: ': řadit sestupně',
-                    sortDescending: ': řadit vzestupně'
+                    sortAscending: '{{ 'grid.aria.sortAscending'|trans }}',
+                    sortDescending: '{{ 'grid.aria.sortDescending'|trans }}'
                 }
             }
         });
