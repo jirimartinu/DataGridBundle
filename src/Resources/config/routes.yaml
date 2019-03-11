@@ -5,7 +5,7 @@ datagrid_ajax:
     name: '.*'
 
 datagrid_export:
-  path: '/datagrid/export/{name}'
+  path: '/datagrid/export/{format}/{name}'
   controller: FreezyBee\DataGridBundle\Controller\DataGridController::export
   requirements:
     name: '.*'

@@ -26,19 +26,22 @@ class BeeGridType implements DataGridTypeInterface
 
         $builder->addText('a', 'A')
             ->setFilterable()
-            ->setSortable();
+            ->setSortable()
+            ->setAllowExport(['csv']);
 
         $builder->addDateTime('b', 'B', 'j.n.Y')
             ->setDateRangeFilter()
-            ->setSortable();
+            ->setSortable()
+            ->setAllowExport(['csv']);
 
         $builder->addText('c', 'C')
             ->setNumberRangeFilter()
             ->setSortable();
 
         $builder->addText('d', 'D')
-            ->setAllowRender(false);
+            ->setAllowRender(false)
+            ->setAllowExport(['csv']);
 
-        $builder->setAllowExport();
+        $builder->setAllowExport(['csv']);
     }
 }

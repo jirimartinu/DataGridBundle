@@ -44,8 +44,8 @@ abstract class Column
     /** @var string|null */
     protected $customTemplate;
 
-    /** @var bool */
-    protected $allowExport = true;
+    /** @var string[] */
+    protected $allowExport = [];
 
     /** @var bool */
     protected $allowRender = true;
@@ -251,18 +251,19 @@ abstract class Column
     }
 
     /**
+     * @param string $format
      * @return bool
      */
-    public function isAllowExport(): bool
+    public function isAllowExport(string $format): bool
     {
-        return $this->allowExport;
+        return in_array($format, $this->allowExport, true);
     }
 
     /**
-     * @param bool $allowExport
+     * @param string[] $allowExport
      * @return Column
      */
-    public function setAllowExport(bool $allowExport): self
+    public function setAllowExport(array $allowExport = []): self
     {
         $this->allowExport = $allowExport;
         return $this;

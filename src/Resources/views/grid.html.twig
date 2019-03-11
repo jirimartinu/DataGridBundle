@@ -96,15 +96,16 @@
             });
         });
 
-        {% if allowExport %}
-            const exportBtn = $('<a href="#">Export</a>').on('click', function (e) {
-                e.preventDefault();
-                window.open('{{ path('datagrid_export', {name: name}) }}?' + $.param(table.ajax.params()), '_blank');
-            });
+        const filterHeader = container.find('.dataTables_filter');
+        filterHeader.html('');
 
-            container.find('.dataTables_filter').html(exportBtn);
-        {% else %}
-            container.find('.dataTables_filter').html('');
-        {% endif %}
+        {% for format in allowExport %}
+            const exportBtn{{ format }} = $('<a href="#">Export ({{ format }})</a>').on('click', function (e) {
+                e.preventDefault();
+                window.open('{{ path('datagrid_export', {name: name, format: format}) }}?' + $.param(table.ajax.params()), '_blank');
+            });
+            filterHeader.append(exportBtn{{ format }});
+            filterHeader.append('&nbsp;&nbsp;');
+        {% endfor %}
     });
 </script>

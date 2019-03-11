@@ -41,8 +41,8 @@ class DataGridBuilder
     /** @var int */
     private $defaultPerPage = 10;
 
-    /** @var bool */
-    private $allowExport = false;
+    /** @var string[] */
+    private $allowExport = [];
 
     /**
      */
@@ -149,10 +149,10 @@ class DataGridBuilder
     }
 
     /**
-     * @param bool $allowExport
+     * @param string[] $allowExport
      * @return DataGridBuilder
      */
-    public function setAllowExport(bool $allowExport = true): self
+    public function setAllowExport(array $allowExport = []): self
     {
         $this->allowExport = $allowExport;
         return $this;

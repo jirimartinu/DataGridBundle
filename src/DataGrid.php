@@ -58,7 +58,7 @@ class DataGrid
      */
     public function ajax(Request $request): JsonResponse
     {
-        $result = $this->processData($request, false);
+        $result = $this->processData($request, false, '');
 
         return (new JsonResponse([
             'draw' => $request->query->getInt('draw'),
@@ -71,19 +71,21 @@ class DataGrid
 
     /**
      * @param Request $request
+     * @param string $format
      * @return Response
      */
-    public function export(Request $request): Response
+    public function export(Request $request, string $format): Response
     {
-        return $this->exporter->export($this->processData($request, true)['data']);
+        return $this->exporter->export($this->name, $this->processData($request, true, $format)['data'], $format);
     }
 
     /**
      * @param Request $request
      * @param bool $export
+     * @param string $format
      * @return array
      */
-    private function processData(Request $request, bool $export): array
+    private function processData(Request $request, bool $export, string $format): array
     {
         $totalCount = $this->dataSource->getTotalCount();
 
@@ -122,8 +124,8 @@ class DataGrid
 
             $row = [];
             foreach ($this->config->getColumns() as $column) {
-                if ($export && $column->isAllowExport()) {
-                    $row[$column->getLabel()] = $column->renderContent($item, $this->engine, ['export' => $export]);
+                if ($export && $column->isAllowExport($format)) {
+                    $row[$column->getLabel()] = $column->renderContent($item, $this->engine, ['export' => $format]);
                 } elseif (!$export && $column->isAllowRender()) {
                     $row[] = $column->renderContent($item, $this->engine, ['export' => $export]);
                 }
@@ -170,7 +172,7 @@ class DataGrid
                 'sortIndex' => $sortIndex,
                 'sortDir' => $this->config->getDefaultSortColumnDirection() ?? 'desc',
             ],
-            'allowExport' => $this->config->isAllowExport(),
+            'allowExport' => $this->config->getAllowExport(),
         ]);
     }
 }

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FreezyBee\DataGridBundle\DependencyInjection;
 
 use FreezyBee\DataGridBundle\DataGridTypeInterface;
+use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
@@ -25,5 +26,8 @@ class FreezyBeeDataGridExtension extends Extension
 
         $container->registerForAutoconfiguration(DataGridTypeInterface::class)
             ->addTag('datagrid.type');
+
+        $container->registerForAutoconfiguration(DataGridExporterInterface::class)
+            ->addTag('datagrid.exporter');
     }
 }

@@ -5,6 +5,7 @@ services:
   FreezyBee\DataGridBundle\Export\:
     resource: '../../Export/*'
     autowire: true
+    tags: ['datagrid.exporter']
 
   FreezyBee\DataGridBundle\Twig\DataGridExtension:
     autowire: true
@@ -14,3 +15,4 @@ services:
     autowire: true
     tags: ['controller.service_arguments']
 
+  FreezyBee\DataGridBundle\Export\DataGridExporterInterface: '@FreezyBee\DataGridBundle\Export\ChainExporter'

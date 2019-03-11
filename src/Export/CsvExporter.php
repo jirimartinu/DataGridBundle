@@ -27,7 +27,7 @@ class CsvExporter implements DataGridExporterInterface
     /**
      * {@inheritdoc}
      */
-    public function export(array $data, string $format = null): Response
+    public function export(string $gridType, array $data, string $format): Response
     {
         $csv = $this->serializer->serialize($data, 'csv', [
             CsvEncoder::DELIMITER_KEY => ';',
@@ -37,5 +37,13 @@ class CsvExporter implements DataGridExporterInterface
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="export.csv"');
         return $response;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function supports(string $gridType, string $format): bool
+    {
+        return $format === 'csv';
     }
 }

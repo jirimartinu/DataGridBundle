@@ -12,9 +12,17 @@ use Symfony\Component\HttpFoundation\Response;
 interface DataGridExporterInterface
 {
     /**
+     * @param string $gridType
      * @param array $data
-     * @param string|null $format
+     * @param string $format
      * @return Response
      */
-    public function export(array $data, string $format = null): Response;
+    public function export(string $gridType, array $data, string $format): Response;
+
+    /**
+     * @param string $gridType
+     * @param string $format
+     * @return bool
+     */
+    public function supports(string $gridType, string $format): bool;
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FreezyBee\DataGridBundle\DependencyInjection\Compiler;
 
+use FreezyBee\DataGridBundle\Export\ChainExporter;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -22,5 +23,14 @@ class GridTypePass implements CompilerPassInterface
                 ->setPublic(true)
                 ->setAutowired(true);
         }
+
+        $exporters = [];
+        foreach ($container->findTaggedServiceIds('datagrid.exporter') as $id => $tag) {
+            if ($id !== ChainExporter::class) {
+                $exporters[] = $container->getDefinition($id);
+            }
+        }
+
+        $container->getDefinition(ChainExporter::class)->addArgument($exporters);
     }
 }

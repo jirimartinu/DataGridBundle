@@ -83,11 +83,12 @@ class SmokeTest extends PantherTestCase
 
         /** @var Client $client */
         $client = self::createClient();
-        $client->request('GET', '/datagrid/export/' . BeeGridType::class, $query);
+        $client->request('GET', '/datagrid/export/csv/' . BeeGridType::class, $query);
 
-        $expected = "name9;1.3.2019;1;Yes\n";
-        $expected .= "name3;1.1.2019;0;No\n";
-        $expected .= 'name2;1.2.2019;9;Yes';
+        $expected = "A;B;D\n";
+        $expected .= "name9;1.3.2019;Yes\n";
+        $expected .= "name3;1.1.2019;No\n";
+        $expected .= 'name2;1.2.2019;Yes';
 
         $response = $client->getResponse();
         self::assertStringContainsString('text/csv', self::getHeader($response, 'Content-Type'));

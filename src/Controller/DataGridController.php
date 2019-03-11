@@ -37,12 +37,13 @@ class DataGridController
 
     /**
      * @param string $name
+     * @param string $format
      * @param Request $request
      * @return Response
      */
-    public function export(string $name, Request $request): Response
+    public function export(string $name, string $format, Request $request): Response
     {
-        return $this->dataGridFactory->create(self::processName($name))->export($request);
+        return $this->dataGridFactory->create(self::processName($name))->export($request, $format);
     }
 
     /**

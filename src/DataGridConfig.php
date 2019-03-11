@@ -37,7 +37,7 @@ class DataGridConfig
     /** @var int */
     private $defaultPerPage;
 
-    /** @var bool */
+    /** @var string[] */
     private $allowExport;
 
     /**
@@ -48,7 +48,7 @@ class DataGridConfig
      * @param string|null $defaultSortColumnName
      * @param string|null $defaultSortColumnDirection
      * @param int $defaultPerPage
-     * @param bool $allowExport
+     * @param string[] $allowExport
      */
     public function __construct(
         $dataSource,
@@ -58,7 +58,7 @@ class DataGridConfig
         ?string $defaultSortColumnName,
         ?string $defaultSortColumnDirection,
         int $defaultPerPage,
-        bool $allowExport
+        array $allowExport
     ) {
         $this->dataSource = $dataSource;
         $this->columns = $columns;
@@ -137,9 +137,9 @@ class DataGridConfig
     }
 
     /**
-     * @return bool
+     * @return array
      */
-    public function isAllowExport(): bool
+    public function getAllowExport(): array
     {
         return $this->allowExport;
     }
