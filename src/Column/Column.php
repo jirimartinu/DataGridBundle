@@ -222,6 +222,18 @@ abstract class Column
     }
 
     /**
+     * @param string|null $placeholder
+     * @return Column
+     */
+    public function setFilterPlaceholder(?string $placeholder = ''): self
+    {
+        if ($this->filter instanceof Filter) {
+            $this->filter->setPlaceholder($placeholder);
+        }
+        return $this;
+    }
+
+    /**
      * @param string|string[]|null $sortColumnName
      * @return Column
      */
