@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FreezyBee\DataGridBundle\DataSource;
 
+use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use \ReflectionProperty;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\Mapping\Embedded;
@@ -92,9 +93,12 @@ class DoctrineDataSource implements DataSourceInterface
                 $this->queryBuilder
                     ->andWhere("{$this->rootAlias}.{$column->getFilterColumnNames()[0]} = ?$this->paramCounter")
                     ->setParameter($this->paramCounter++, $value);
-            } elseif ($filter instanceof DateRangeFilter) {
-                [$from, $to] = StringParserHelper::parseStringToDateArray($value);
-                $whereName = "{$this->rootAlias}.{$column->getFilterColumnNames()[0]}";
+            } elseif ($filter instanceof DateRangeFilter || $filter instanceof NumberRangeFilter) {
+                [$from, $to] = $filter instanceof DateRangeFilter ?
+                    StringParserHelper::parseStringToDateArray($value) :
+                    StringParserHelper::parseStringToNumberArray($value);
+
+                $whereName = $this->resolveColumnPath($column->getFilterColumnNames()[0]);
 
                 $fromParam = $this->paramCounter++;
                 $toParam = $this->paramCounter++;
