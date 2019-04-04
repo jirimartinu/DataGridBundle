@@ -372,10 +372,12 @@ abstract class Column
 
     /**
      * @param array $params
+     * @return Column
      */
-    public function setTemplateParams(array $params): void
+    public function setTemplateParams(array $params): self
     {
         $this->templateParams = $params;
+        return $this;
     }
 
     /**
@@ -387,7 +389,7 @@ abstract class Column
     public function renderContent($row, EngineInterface $engine, array $params = []): ?string
     {
         if ($this->customTemplate !== null) {
-            return $engine->render($this->customTemplate, $params + $this->templateParams + ['item' => $row]);
+            return $engine->render($this->customTemplate, $params + $this->templateParams + ['item' => $row, 'propertyName' => $this->contentColumnName]);
         }
 
         if (is_callable($this->customRendererCallback)) {
