@@ -50,15 +50,17 @@ class DataGridFactory
 
     /**
      * @param string $className
+     * @param array $options
+     *
      * @return DataGrid
      */
-    public function create(string $className): DataGrid
+    public function create(string $className, array $options = []): DataGrid
     {
         /** @var DataGridTypeInterface $gridType */
         $gridType = $this->container->get($className);
 
         $builder = new DataGridBuilder();
-        $gridType->buildGrid($builder);
+        $gridType->buildGrid($builder, $options);
         $config = $builder->generateConfig();
 
         $dataSource = $config->getDataSource();

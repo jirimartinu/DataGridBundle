@@ -12,5 +12,5 @@ interface DataGridTypeInterface
     /**
      * @param DataGridBuilder $builder
      */
-    public function buildGrid(DataGridBuilder $builder): void;
+    public function buildGrid(DataGridBuilder $builder, array $options = []): void;
 }
