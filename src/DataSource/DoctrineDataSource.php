@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace FreezyBee\DataGridBundle\DataSource;
 
+use FreezyBee\DataGridBundle\Filter\NumberCompareFilter;
 use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use \ReflectionProperty;
 use Doctrine\Common\Annotations\AnnotationReader;
@@ -107,6 +108,20 @@ class DoctrineDataSource implements DataSourceInterface
                     ->andWhere("$whereName >= ?$fromParam AND $whereName <= ?$toParam")
                     ->setParameter($fromParam, $from)
                     ->setParameter($toParam, $to);
+            } elseif ($filter instanceof NumberCompareFilter) {
+                [$operator, $value] = StringParserHelper::parseStringToNumberCompareArray($value);
+
+                if ($value === '') {
+                    return;
+                }
+
+                $whereName = $this->resolveColumnPath($column->getFilterColumnNames()[0]);
+
+                $param = $this->paramCounter++;
+
+                $this->queryBuilder
+                    ->andWhere("$whereName $operator ?$param")
+                    ->setParameter($param, $value);
             } elseif ($filter instanceof TextFilter) {
                 $whereQuery = [];
                 foreach ($column->getFilterColumnNames() as $filterColumnName) {

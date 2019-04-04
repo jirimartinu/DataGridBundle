@@ -61,8 +61,17 @@
 
         let timeout = null;
 
+        const hasCustomInit = function (elem) {
+            return elem.parent().parent().hasClass('js-datagrid-number-compare');
+        };
+
         container.on('keyup', 'thead input', function () {
             const self = $(this);
+
+            if (hasCustomInit(self)) {
+                return;
+            }
+
             clearTimeout(timeout);
             timeout = setTimeout(function () {
                 table
@@ -74,6 +83,11 @@
 
         container.on('change', 'thead select', function () {
             const self = $(this);
+
+            if (hasCustomInit(self)) {
+                return;
+            }
+
             table
                 .column(self.data('index'))
                 .search(self.val())
@@ -82,6 +96,11 @@
 
         container.find('thead .js-datagrid-flatpickr').each(function () {
             const self = $(this);
+
+            if (hasCustomInit(self)) {
+                return;
+            }
+
             flatpickr(this, {
                 dateFormat: 'd.m.Y',
                 locale: 'cs',
@@ -95,6 +114,23 @@
                 }
             });
         });
+
+        const numberCompareFunc = function () {
+            const self = $(this);
+            const parent = self.parent().parent();
+            const index = parent.children('[type=hidden]').data('index');
+            const selectVal = parent.children('.ui.dropdown').find('select').val();
+            const inputVal = parent.children('.ui.input').find('input').val();
+
+            table
+                .column(index)
+                .search(selectVal + '|' + inputVal)
+                .draw();
+        };
+
+        container.on('change', 'thead .js-datagrid-number-compare select', numberCompareFunc);
+
+        container.on('keyup', 'thead .js-datagrid-number-compare input[type=text]', numberCompareFunc);
 
         const filterHeader = container.find('.dataTables_filter');
         filterHeader.html('');

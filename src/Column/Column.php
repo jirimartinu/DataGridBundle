@@ -6,6 +6,7 @@ namespace FreezyBee\DataGridBundle\Column;
 
 use FreezyBee\DataGridBundle\Filter\DateRangeFilter;
 use FreezyBee\DataGridBundle\Filter\Filter;
+use FreezyBee\DataGridBundle\Filter\NumberCompareFilter;
 use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectBooleanFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
@@ -171,6 +172,16 @@ abstract class Column
     public function setDateRangeFilter(?string $placeholder = null): self
     {
         $this->filter = new DateRangeFilter();
+        $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
+        return $this->setFilterable();
+    }
+
+    /**
+     * @return Column
+     */
+    public function setNumberCompareFilter(?string $placeholder = null): self
+    {
+        $this->filter = new NumberCompareFilter();
         $this->filter->setPlaceholder($placeholder ?? $this->getLabel());
         return $this->setFilterable();
     }

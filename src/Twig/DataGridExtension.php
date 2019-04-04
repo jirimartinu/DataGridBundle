@@ -8,6 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use FreezyBee\DataGridBundle\DataGrid;
 use FreezyBee\DataGridBundle\Filter\DateRangeFilter;
 use FreezyBee\DataGridBundle\Filter\Filter;
+use FreezyBee\DataGridBundle\Filter\NumberCompareFilter;
 use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
@@ -117,6 +118,9 @@ class DataGridExtension extends AbstractExtension
                 break;
             case $filter instanceof NumberRangeFilter:
                 $template = '@FreezyBeeDataGrid/filter/number_range_picker.html.twig';
+                break;
+            case $filter instanceof NumberCompareFilter:
+                $template = '@FreezyBeeDataGrid/filter/number_compare.html.twig';
                 break;
             case $filter instanceof TextFilter:
                 $template = '@FreezyBeeDataGrid/filter/text.html.twig';

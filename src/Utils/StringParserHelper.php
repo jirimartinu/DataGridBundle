@@ -46,4 +46,12 @@ class StringParserHelper
 
         return [(int) $from, (int) $to];
     }
+    /**
+     * @param string $value
+     * @return int[]
+     */
+    public static function parseStringToNumberCompareArray(string $value): array
+    {
+        return explode('|', $value, 2);
+    }
 }

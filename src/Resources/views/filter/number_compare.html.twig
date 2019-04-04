@@ -1,0 +1,30 @@
+<style>
+    .js-datagrid-number-compare {
+        display: flex !important;
+    }
+
+    .js-datagrid-number-compare:first-child {
+        min-width: 1% !important;
+    }
+
+    .js-datagrid-number-compare:nth-child(2) {
+        width: 100px !important;
+        padding-left: 0.785714em !important;
+    }
+</style>
+
+<div class="js-datagrid-number-compare">
+    <select>
+        <option value="<"><</option>
+        <option value=">">></option>
+        <option value="=">=</option>
+        <option value="<="><=</option>
+        <option value=">=">>=</option>
+    </select>
+
+    <div>
+        <input type="text" placeholder="{{ placeholder }}">
+    </div>
+
+    <input type="hidden" name="{{ name }}" data-index="{{ index }}">
+</div>

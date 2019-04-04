@@ -1,0 +1,1 @@
+C:37:"PHPUnit\Runner\DefaultTestResultCache":187:{a:2:{s:7:"defects";a:0:{}s:5:"times";a:2:{s:54:"FreezyBee\DataGridBundle\Tests\E2E\SmokeTest::testAjax";d:23.397;s:56:"FreezyBee\DataGridBundle\Tests\E2E\SmokeTest::testExport";d:0.148;}}}
