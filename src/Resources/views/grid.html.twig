@@ -1,5 +1,7 @@
 {% trans_default_domain 'datagrid' %}
-<table class="table js-datagrid-table" data-datagrid="{{ name|replace({'\\': '_'}) }}">
+<table class="table js-datagrid-table"
+        data-datagrid="{{ name|replace({'\\': '_'}) }}"
+        data-datagrid-options="{{ options }}">
     <thead>
     <tr>
         {% for column in columns %}
@@ -33,7 +35,12 @@
             serverSide: true,
             pageLength: {{ default.perPage }},
             order: [[{{ default.sortIndex }}, '{{ default.sortDir }}']],
-            ajax: '{{ path('datagrid_ajax', {name: name}) }}',
+            ajax: {
+                url: '{{ path('datagrid_ajax', {name: name}) }}',
+                data: (data) => {
+                    data.options = $('.js-datagrid-table').data('datagrid-options');
+                }
+            },
             language: {
                 emptyTable: '{{ 'grid.emptyTable'|trans }}',
                 info: '{{ 'grid.info'|trans }}',
