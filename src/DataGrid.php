@@ -6,6 +6,7 @@ namespace FreezyBee\DataGridBundle;
 
 use FreezyBee\DataGridBundle\DataSource\DataSourceInterface;
 use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
+use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -18,6 +19,9 @@ class DataGrid
 {
     /** @var EngineInterface */
     private $engine;
+
+    /** @var SerializerInterface */
+    private $serializer;
 
     /** @var DataGridExporterInterface */
     private $exporter;
@@ -33,6 +37,7 @@ class DataGrid
 
     /**
      * @param EngineInterface $engine
+     * @param SerializerInterface $serializer
      * @param DataGridExporterInterface $exporter
      * @param DataSourceInterface $dataSource
      * @param DataGridConfig $config
@@ -40,12 +45,14 @@ class DataGrid
      */
     public function __construct(
         EngineInterface $engine,
+        SerializerInterface $serializer,
         DataGridExporterInterface $exporter,
         DataSourceInterface $dataSource,
         DataGridConfig $config,
         string $name
     ) {
         $this->engine = $engine;
+        $this->serializer = $serializer;
         $this->exporter = $exporter;
         $this->dataSource = $dataSource;
         $this->config = $config;
@@ -173,6 +180,7 @@ class DataGrid
                 'sortDir' => $this->config->getDefaultSortColumnDirection() ?? 'desc',
             ],
             'allowExport' => $this->config->getAllowExport(),
+            'options' => $this->serializer->serialize($this->config->getOptions(), 'json'),
         ]);
     }
 }

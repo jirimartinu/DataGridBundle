@@ -44,6 +44,9 @@ class DataGridBuilder
     /** @var string[] */
     private $allowExport = [];
 
+    /** @var array */
+    private $options = [];
+
     /**
      */
     public function __construct()
@@ -159,6 +162,16 @@ class DataGridBuilder
     }
 
     /**
+     * @param string[] $options
+     * @return DataGridBuilder
+     */
+    public function setOptions(array $options = []): self
+    {
+        $this->options = $options;
+        return $this;
+    }
+
+    /**
      * @internal
      * @return DataGridConfig
      */
@@ -172,7 +185,8 @@ class DataGridBuilder
             $this->defaultSortColumnName,
             $this->defaultSortColumnDirection,
             $this->defaultPerPage,
-            $this->allowExport
+            $this->allowExport,
+            $this->options
         );
     }
 }

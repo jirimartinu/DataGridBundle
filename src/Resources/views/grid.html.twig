@@ -62,7 +62,7 @@
         let timeout = null;
 
         const hasCustomInit = function (elem) {
-            return elem.parent().parent().hasClass('js-datagrid-number-compare');
+            return elem.parent().hasClass('js-datagrid-number-compare') || elem.parent().parent().hasClass('js-datagrid-number-compare');
         };
 
         container.on('keyup', 'thead input', function () {
@@ -117,10 +117,15 @@
 
         const numberCompareFunc = function () {
             const self = $(this);
-            const parent = self.parent().parent();
+            let parent = self.parent();
+
+            if (parent.hasClass('js-datagrid-number-compare') === false) {
+                parent = parent.parent();
+            }
+
             const index = parent.children('[type=hidden]').data('index');
-            const selectVal = parent.children('.ui.dropdown').find('select').val();
-            const inputVal = parent.children('.ui.input').find('input').val();
+            const selectVal = parent.find('select').val();
+            const inputVal = parent.children('[type=text]').val();
 
             table
                 .column(index)

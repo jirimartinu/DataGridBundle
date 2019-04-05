@@ -3,28 +3,24 @@
         display: flex !important;
     }
 
-    .js-datagrid-number-compare:first-child {
+    .js-datagrid-number-compare .ui.dropdown.selection {
         min-width: 1% !important;
     }
 
-    .js-datagrid-number-compare:nth-child(2) {
+    .js-datagrid-number-compare input {
         width: 100px !important;
         padding-left: 0.785714em !important;
     }
 </style>
 
-<div class="js-datagrid-number-compare">
-    <select>
+<div class="ui left action input js-datagrid-number-compare">
+    <select class="ui compact selection dropdown">
         <option value="<"><</option>
         <option value=">">></option>
         <option value="=">=</option>
         <option value="<="><=</option>
         <option value=">=">>=</option>
     </select>
-
-    <div>
-        <input type="text" placeholder="{{ placeholder }}">
-    </div>
-
+    <input type="text" placeholder="{{ placeholder }}">
     <input type="hidden" name="{{ name }}" data-index="{{ index }}">
 </div>

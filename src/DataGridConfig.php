@@ -40,6 +40,9 @@ class DataGridConfig
     /** @var string[] */
     private $allowExport;
 
+    /** @var array */
+    private $options;
+
     /**
      * @param array|QueryBuilder|null $dataSource
      * @param Column[] $columns
@@ -58,7 +61,8 @@ class DataGridConfig
         ?string $defaultSortColumnName,
         ?string $defaultSortColumnDirection,
         int $defaultPerPage,
-        array $allowExport
+        array $allowExport,
+        array $options = []
     ) {
         $this->dataSource = $dataSource;
         $this->columns = $columns;
@@ -68,6 +72,7 @@ class DataGridConfig
         $this->defaultSortColumnDirection = $defaultSortColumnDirection;
         $this->defaultPerPage = $defaultPerPage;
         $this->allowExport = $allowExport;
+        $this->options = $options;
     }
 
     /**
@@ -142,5 +147,13 @@ class DataGridConfig
     public function getAllowExport(): array
     {
         return $this->allowExport;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }

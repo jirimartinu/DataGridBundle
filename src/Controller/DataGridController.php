@@ -32,7 +32,10 @@ class DataGridController
      */
     public function ajax(string $name, Request $request): JsonResponse
     {
-        return $this->dataGridFactory->create(self::processName($name))->ajax($request);
+        return $this->dataGridFactory->create(
+            self::processName($name),
+            $request->query->get('options') ?? []
+        )->ajax($request);
     }
 
     /**
@@ -43,7 +46,10 @@ class DataGridController
      */
     public function export(string $name, string $format, Request $request): Response
     {
-        return $this->dataGridFactory->create(self::processName($name))->export($request, $format);
+        return $this->dataGridFactory->create(
+            self::processName($name),
+            $request->query->get('options') ?? []
+        )->export($request, $format);
     }
 
     /**

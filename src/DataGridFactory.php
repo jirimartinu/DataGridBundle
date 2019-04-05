@@ -9,6 +9,7 @@ use FreezyBee\DataGridBundle\DataSource\ArrayDataSource;
 use FreezyBee\DataGridBundle\DataSource\DoctrineDataSource;
 use FreezyBee\DataGridBundle\Exception\DataGridException;
 use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
+use JMS\Serializer\SerializerInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 use Symfony\Component\Templating\EngineInterface;
@@ -24,6 +25,9 @@ class DataGridFactory
     /** @var EngineInterface */
     private $engine;
 
+    /** @var SerializerInterface */
+    private $serializer;
+
     /** @var PropertyAccessorInterface */
     private $propertyAccessor;
 
@@ -33,17 +37,20 @@ class DataGridFactory
     /**
      * @param ContainerInterface $container
      * @param EngineInterface $engine
+     * @param SerializerInterface $serializer
      * @param PropertyAccessorInterface $propertyAccessor
      * @param DataGridExporterInterface $exporter
      */
     public function __construct(
         ContainerInterface $container,
         EngineInterface $engine,
+        SerializerInterface $serializer,
         PropertyAccessorInterface $propertyAccessor,
         DataGridExporterInterface $exporter
     ) {
         $this->container = $container;
         $this->engine = $engine;
+        $this->serializer = $serializer;
         $this->propertyAccessor = $propertyAccessor;
         $this->exporter = $exporter;
     }
@@ -72,6 +79,6 @@ class DataGridFactory
             throw new DataGridException('Invalid datasource');
         }
 
-        return new DataGrid($this->engine, $this->exporter, $dataSourceImpl, $config, $className);
+        return new DataGrid($this->engine, $this->serializer, $this->exporter, $dataSourceImpl, $config, $className);
     }
 }
