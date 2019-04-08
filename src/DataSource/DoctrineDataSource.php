@@ -181,6 +181,10 @@ class DoctrineDataSource implements DataSourceInterface
      */
     private function isEmbeddableEntity(string $entity): bool
     {
+        if (!property_exists($entity, $this->queryBuilder->getRootEntities()[0])) {
+            return false;
+        }
+
         $reflectionProperty = new ReflectionProperty($this->queryBuilder->getRootEntities()[0], $entity);
         $embeddableAnnotation = $this->annotationReader->getPropertyAnnotation($reflectionProperty, Embedded::class);
 
