@@ -1,5 +1,5 @@
 {% set value = datagrid_accessor(item, propertyName) %}
-{% spaceless %}
+{% apply spaceless %}
     {% if value is same as(true) or value is same as(false) %}
         {% if export %}
             {% if value %}{{ 'column.text.bool.yes'|trans([], 'datagrid') }}{% else %}{{ 'column.text.bool.no'|trans([], 'datagrid') }}{% endif %}
@@ -9,4 +9,4 @@
     {% else %}
         {{ value }}
     {% endif %}
-{% endspaceless %}
+{% endapply %}
