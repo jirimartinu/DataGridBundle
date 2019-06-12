@@ -11,7 +11,7 @@ use FreezyBee\DataGridBundle\Exception\DataGridException;
 use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
@@ -21,7 +21,7 @@ class DataGridFactory
     /** @var ContainerInterface */
     private $container;
 
-    /** @var EngineInterface */
+    /** @var Environment */
     private $engine;
 
     /** @var PropertyAccessorInterface */
@@ -32,13 +32,13 @@ class DataGridFactory
 
     /**
      * @param ContainerInterface $container
-     * @param EngineInterface $engine
+     * @param Environment $engine
      * @param PropertyAccessorInterface $propertyAccessor
      * @param DataGridExporterInterface $exporter
      */
     public function __construct(
         ContainerInterface $container,
-        EngineInterface $engine,
+        Environment $engine,
         PropertyAccessorInterface $propertyAccessor,
         DataGridExporterInterface $exporter
     ) {

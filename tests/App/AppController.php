@@ -6,17 +6,17 @@ namespace FreezyBee\DataGridBundle\Tests\App;
 
 use FreezyBee\DataGridBundle\DataGridFactory;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 class AppController
 {
-    /** @var EngineInterface */
+    /** @var Environment */
     private $engine;
 
     /** @var DataGridFactory */
     private $dataGridFactory;
 
-    public function __construct(EngineInterface $engine, DataGridFactory $dataGridFactory)
+    public function __construct(Environment $engine, DataGridFactory $dataGridFactory)
     {
         $this->engine = $engine;
         $this->dataGridFactory = $dataGridFactory;

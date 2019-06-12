@@ -9,14 +9,14 @@ use FreezyBee\DataGridBundle\Export\DataGridExporterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
  */
 class DataGrid
 {
-    /** @var EngineInterface */
+    /** @var Environment */
     private $engine;
 
     /** @var DataGridExporterInterface */
@@ -32,14 +32,14 @@ class DataGrid
     private $name;
 
     /**
-     * @param EngineInterface $engine
+     * @param Environment $engine
      * @param DataGridExporterInterface $exporter
      * @param DataSourceInterface $dataSource
      * @param DataGridConfig $config
      * @param string $name
      */
     public function __construct(
-        EngineInterface $engine,
+        Environment $engine,
         DataGridExporterInterface $exporter,
         DataSourceInterface $dataSource,
         DataGridConfig $config,

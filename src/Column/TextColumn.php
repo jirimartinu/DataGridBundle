@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace FreezyBee\DataGridBundle\Column;
 
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
@@ -14,7 +14,7 @@ class TextColumn extends Column
     /**
      * {@inheritdoc}
      */
-    public function renderContent($row, EngineInterface $engine, array $params = []): ?string
+    public function renderContent($row, Environment $engine, array $params = []): ?string
     {
         $content = parent::renderContent($row, $engine, $params);
         if ($content !== null) {

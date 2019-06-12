@@ -61,9 +61,6 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
         $c->loadFromExtension('framework', [
             'test' => true,
-            'templating' => [
-                'engines' => ['twig'],
-            ],
         ]);
 
         $c->loadFromExtension('twig', [
