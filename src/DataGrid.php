@@ -10,14 +10,14 @@ use JMS\Serializer\SerializerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Templating\EngineInterface;
+use Twig\Environment;
 
 /**
  * @author Jakub Janata <jakubjanata@gmail.com>
  */
 class DataGrid
 {
-    /** @var EngineInterface */
+    /** @var Environment */
     private $engine;
 
     /** @var SerializerInterface */
@@ -36,7 +36,7 @@ class DataGrid
     private $name;
 
     /**
-     * @param EngineInterface $engine
+     * @param Environment $engine
      * @param SerializerInterface $serializer
      * @param DataGridExporterInterface $exporter
      * @param DataSourceInterface $dataSource
@@ -44,7 +44,7 @@ class DataGrid
      * @param string $name
      */
     public function __construct(
-        EngineInterface $engine,
+        Environment $engine,
         SerializerInterface $serializer,
         DataGridExporterInterface $exporter,
         DataSourceInterface $dataSource,

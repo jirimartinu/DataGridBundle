@@ -90,6 +90,7 @@ class SmokeTest extends PantherTestCase
         $expected .= "name3;1.1.2019;No\n";
         $expected .= 'name2;1.2.2019;Yes';
 
+        /** @var Response $response */
         $response = $client->getResponse();
         self::assertStringContainsString('text/csv', self::getHeader($response, 'Content-Type'));
         self::assertStringContainsString(

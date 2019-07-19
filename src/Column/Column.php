@@ -11,6 +11,7 @@ use FreezyBee\DataGridBundle\Filter\NumberRangeFilter;
 use FreezyBee\DataGridBundle\Filter\SelectBooleanFilter;
 use FreezyBee\DataGridBundle\Filter\SelectEntityFilter;
 use FreezyBee\DataGridBundle\Filter\SelectFilter;
+use Twig\Environment;
 use FreezyBee\DataGridBundle\Filter\TextFilter;
 use Symfony\Component\Templating\EngineInterface;
 
@@ -393,11 +394,11 @@ abstract class Column
 
     /**
      * @param mixed $row
-     * @param EngineInterface $engine
+     * @param Environment $engine
      * @param array $params
      * @return string|null
      */
-    public function renderContent($row, EngineInterface $engine, array $params = []): ?string
+    public function renderContent($row, Environment $engine, array $params = []): ?string
     {
         if ($this->customTemplate !== null) {
             return $engine->render($this->customTemplate, $params + $this->templateParams + ['item' => $row, 'propertyName' => $this->contentColumnName]);
