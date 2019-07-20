@@ -16,3 +16,6 @@ services:
     tags: ['controller.service_arguments']
 
   FreezyBee\DataGridBundle\Export\DataGridExporterInterface: '@FreezyBee\DataGridBundle\Export\ChainExporter'
+
+  JMS\Serializer\SerializerInterface:
+    autowire: true
